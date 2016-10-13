@@ -1,0 +1,40 @@
+.color1 {
+			color:black;
+		}
+		
+.card {
+  width:286px;
+  height:285px;
+
+}
+.card-image {
+  float: left;
+
+  width: 40px;
+  height: 40px;
+}
+.card-image img {
+  height: 80%;
+  width: 80%;
+}
+.right-content {
+  width: 100%;
+  float: left,right;
+   background-image: black;
+}
+.card-title {
+  width : 300px;
+  
+  /*float:right;*/
+  /*width:200px;*/
+  font-size : 15px;
+  /*background-color : black;*/
+  /*padding-left: 40px;*/
+}
+
+.card-content{
+  font-size: 15px;
+  width:300px;
+    background-image: black;
+
+}

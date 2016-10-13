@@ -1,8 +1,37 @@
-<h1>Need Music?</h1>
-<p class="lead">Use the ngSpotify app to browse new releases and find your favorite songs<br> All you get is this text and a mostly barebones HTML document.</p>
+<h1>실시간 근황이 궁금하세요?</h1>
+<p class="lead">실시간으로 이슈되거나 SNS상의 궁금한것이있으면 검색해보세요<br> Twitter,Instagram,facebook,google,flicker 등 다양하게 가져옵니다</p>
 
-<form>
-    <div class="form-group">
-        <input class="form-control" type="text" placeholder="Search Artists..." [(ngModel)]="searchStr" name="searchStr" (keyup)="searchMusic()">    
-    </div>    
-</form>
+
+    <button class="waves-effect waves-light btn" (click)="makecall()">author</button>
+    <div class="row">
+        <div class="col-md-8">
+         <input id="hashtags" class="form-control" placeholder="#태그를 이용해 검색해주세요" type="text" [(ngModel)]="searchquery" [ngModelOptions]="{standalone: true}">
+         </div>
+         <div class="col-md-4">
+          <button class="btn btn-default" (click)="searchcall()">Search</button>
+         </div>
+     </div>
+    <div class="row">
+        <p></p>
+        <div *ngFor="let res of tweetsdata" class="col col-sm-3 ">
+                    <div class="card">
+                            <div class="card-image">
+                                <img style={width:10px,height:10px;} src={{res.user.profile_image_url}}>
+                            </div>
+                            <div class="right-content">
+                                <span class="card-title">{{res.user.name}}</span>
+                                    <div class="card-content">                                      
+                                        <div *ngIf = "res.entities.media != Object">
+                                            <img src={{res.entities.media[0].media_url}}:thumb>
+                                        </div>
+                                         <div *ngIf = "res.entities.media == Object">
+                                           <p>{{res.text}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="https://twitter.com/Jinher22/status/{{res.id_str}}">자세히보기</a> 
+                                    </div>
+                            </div>
+                    </div> 
+        </div>
+    </div>
