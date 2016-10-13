@@ -17,6 +17,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
+    "http-server": "http-server",
     "webdriver:update": "webdriver-manager update"
   },
   "keywords": [],
