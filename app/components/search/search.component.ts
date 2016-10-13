@@ -79,7 +79,7 @@ export class SearchComponent {
 
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
     
-    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
        this.tweetsdata = res.json().data.statuses;  // Tweetdata
 
 
