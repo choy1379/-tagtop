@@ -1,20 +1,21 @@
+
 <h1>실시간 근황이 궁금하세요?</h1>
 <p class="lead">실시간으로 이슈되거나 SNS상의 궁금한것이있으면 검색해보세요<br> Twitter,Instagram,facebook,google,flicker 등 다양하게 가져옵니다</p>
-
+<!--<div (click)="myAction()">{{message}}</div>-->
 
     <button class="waves-effect waves-light btn" (click)="makecall()">author</button>
     <div class="row">
         <div class="col-md-8">
-         <input id="hashtags" class="form-control" placeholder="#태그를 이용해 검색해주세요" type="text" [(ngModel)]="searchquery" [ngModelOptions]="{standalone: true}">
+         <input id="hashtags" class="form-control" placeholder="#태그를 이용해 검색해주세요" type="text" [(ngModel)]="searchquery" [ngModelOptions]="{standalone: true}" (keyup.enter)="searchcall()">
          </div>
          <div class="col-md-4">
           <button class="btn btn-default" (click)="searchcall()">Search</button>
          </div>
      </div>
-    <div class="row">
+    <div id ="test" class="row">
         <p></p>
-        <div *ngFor="let res of tweetsdata" class="col col-sm-3 ">
-                    <div class="card">
+        <div  *ngFor="let res of tweetsdata" class="col col-sm-3 " style="position:relative" (click)="myAction(res)">                
+                    <div class="card" style="width:100%">
                             <div class="card-image">
                                 <img style={width:10px,height:10px;} src={{res.user.profile_image_url}}>
                             </div>
@@ -29,9 +30,42 @@
                                         </div>
                                     </div>
                                     <div class="card-action">
-                                        <a href="https://twitter.com/Jinher22/status/{{res.id_str}}">자세히보기</a> 
+                                         <!--<a routerLink="/moreinfo/{{res.id}}">자세히보기</a>-->
+                                        <!--<a href="https://twitter.com/Jinher22/status/{{res.id_str}}">자세히보기</a> -->
                                     </div>
                             </div>
                     </div> 
+                    
         </div>
     </div>
+  <div id ="test2" class="fancybox-overlay fancybox-overlay-fixed">
+        <div class="fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened" tabindex="-1" style="width: auto; height: auto; position: absolute; top: 20%; left: 35%; right: 15%; opacity: 1; overflow: visible;">
+                <div class="fancybox-skin" style="padding: 5px; width: 50%; height: auto;">
+                            <div class="fancybox-outer">
+                                    <div class="fancybox-inner" style="overflow: hidden; width: 100%; height: auto; cursor: pointer;">
+                                            <div class="detail_content">
+                                
+                                                <div class="profile_img">
+                                                    <a id ="moreinfo" href="#" target="_blank" class="author_link" title="사용자에게가기">
+                                                        <img id ="user_profile" src="">
+                                                        <span id="user_name" class="auth_name"> </span>
+                                                    </a>
+                                                </div>
+                                                <div id="user_time" class="user_time">usertime</div>
+                                                <!--2016-10-16 이미지 없는거 disable    아직 x            -->
+                                      
+                                                 <img id="content_image" src = "" style="" class="imagesizes">
+                                              
+                                                    <div id="content" class="content"> content
+                                                     </div>
+                                                <a id="targetlink" target="_blank" href="#">https </a>
+                                                <div class="post_link">
+                                                    <a id ="post_link" href="#" title="새창" target="_blank">원문보기[새창]</a>
+                                                </div>
+                                            </div>
+                                     </div>
+                            </div>
+                        <a title="Close" (click)="Close()" class="fancybox-item fancybox-close" href="javascript:;"></a>
+                </div>
+        </div>
+ </div>
