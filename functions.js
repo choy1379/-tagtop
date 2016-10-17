@@ -21,6 +21,7 @@ functions = {
         })
     },
      search: function(req, res) {
+        var result= "";
         var searchquery = req.body.query;
         var encsearchquery = encodeURIComponent(searchquery);
         var bearerheader = 'Bearer ' + config.bearertoken;
@@ -29,10 +30,13 @@ functions = {
              if(error)
              console.log(error);
              else {
-                 
-                 res.json({success: true, data:JSON.parse(body.body)});
+             
+                res.json({success: true, data:JSON.parse(body.body)});
+                
              }
          })
+      
+        
     },
     user: function(req, res){
         var searchquery = req.body.screenname;
@@ -46,8 +50,23 @@ functions = {
              }
          })
     }
+    // youtubesearch : function(req,res)
+    // {
+    //        var searchquery = 'req.body.query';
+    //       const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
+    //     const API_TOKEN = 'AIzaSyB2QPeJGn6xo9rrjjzZrk9OT33aO-Ubzxo';
+
+    //     request.get(`${BASE_URL}?q=${searchquery}&part=snippet&key=${API_TOKEN}`, function(error, body, response) {
+    //          if(error)
+    //          console.log(error);
+    //          else {
+    //              res.json({success: true, Youtubedata:JSON.parse(body.body)});
+    //          }
+    //      })
+    // }
     
-    
+
 }
+
 
 module.exports = functions;

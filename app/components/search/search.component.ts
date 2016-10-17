@@ -1,7 +1,11 @@
-import { Component,Input,OnInit } from '@angular/core';
+import { Component,Input,OnInit,Injectable } from '@angular/core';
 import { Http, Headers} from '@angular/http';
+import {SpotifyService} from '../../services/spotify.service';
+import 'rxjs/add/operator/map';
 
  declare  var $:any;
+
+
 @Component({
     moduleId:module.id,
     selector: 'search',
@@ -10,11 +14,34 @@ import { Http, Headers} from '@angular/http';
     .color1 {
 			color:black;
 		}
-		
+
 .card {
   margin-top: 20px;
+  margin-left: 20px;
   width:286px;
   height:200px;
+
+}
+
+.youtubecard {
+  margin-top: 20px;
+  width:100%;
+  height:280px;
+
+}
+.youtubetop
+{
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    text-align: center;
+}
+.youtubetext
+{
+
+    width: 100%;
+    height:auto;
 
 }
 .card-image {
@@ -46,9 +73,13 @@ import { Http, Headers} from '@angular/http';
 }
 .col{
      border: 1px solid white;
+     border-top-left-radius:5%;
+     border-top-right-radius:5%;
+     border-bottom-left-radius:5%;
+     border-bottom-right-radius:5%;
      background-color : solid white;
     }
-.col-sm-3{
+.col-sm-4{
      margin-top : 20px;
      margin-left : 20px;
      width : 286px
@@ -58,49 +89,94 @@ import { Http, Headers} from '@angular/http';
 .imagesizes{
  width: 80%; height: auto;
 }
+.content-image{
+  height:auto;
+}
+#card:hover{background-color:#dcdcdc  ;
+ }
   `]
 })
-
-export class SearchComponent{
-    searchquery='';
+@Injectable()
+export class SearchComponent implements OnInit{
+    searchquery='태그';
     searchStr:string;
     tweetsdata:any;
+    youtubeResult:any;
+    data = new Array();
+    
     // showDialog = false;
  
 
-    constructor(private http: Http){
+    constructor(private http: Http,private _spotifyService:SpotifyService){
     }
 
      makecall(){
-            var headers = new Headers();
+        //     var headers = new Headers();
+        //     headers.append('Content-Type', 'application/X-www-form-urlencoded');
+            
+        //     this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+        //     console.log(res);     
+        // });
+    }
+     ngOnInit(){
+              var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('https://tagtops.herokuapp.com/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
-
-            //      this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
-            // console.log(res);     
-            
-                  
         });
-    }
-    searchcall(){
+        
+        console.log("권한 활성화");
     
+    //네이버위젯같은거 초반값
+    var headers = new Headers();
+    var searchterm = 'query=' + this.searchquery;
+    headers.append('Content-Type', 'application/X-www-form-urlencoded');
+
+    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+        this.data[0] = res.json().data.statuses;
+        }); 
+    this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
+        this.data[1] = res.items
+        });
+    ///////////////////
+     }
+    searchcall(){
+
+     
     var headers = new Headers();
     var searchterm = 'query=' + this.searchquery;
 
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
-    
-    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
-       this.tweetsdata = res.json().data.statuses;  // Tweetdata
+  
+
+    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+       this.tweetsdata = res.json().data.statuses;  
+       this.data[0] = this.tweetsdata;
+
+         //  10-17 array 합쳤는데 .. 수정해야됨 
+            for(var i=0; this.data[1].length>i; i++)
+            {  
+                this.data[0][this.data[0].length]= this.data[1][i];
+            }
+            console.log("1번실행");
+        }); 
+
+    this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
+      this.youtubeResult = res.items;
+      this.data[1] = this.youtubeResult;
+      console.log("2번실행");
+        });
+     
+   console.log("3번실행");
+
+  
 
 
-    // this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
-    //    this.tweetsdata = res.json().data.statuses;  // Tweetdata
-    }); 
-    
+
     }
     
+  
      myAction = function(res:any){
    
     var divTest = document.getElementById("test").style.display='block';
@@ -114,7 +190,7 @@ export class SearchComponent{
 
     var postlink = document.getElementById("post_link").setAttribute('href',"https://twitter.com/Jinher22/status/"+res.id_str);
 
-
+     
     
      if(res.entities.urls.length != 0)
     {
@@ -148,7 +224,7 @@ export class SearchComponent{
  
    
   // 2016-10-16 content image
-   console.log(res.entities.media);
+   
 
    var content = document.getElementById("content").innerHTML = res.text;
 
@@ -169,13 +245,15 @@ export class SearchComponent{
 
     var content_image_src = document.getElementById("content_image").setAttribute('src','');
     var content_image_none = document.getElementById("content_image").style.display='none';
+
+    var target_none = document.getElementById("targetlink").setAttribute('href','');
+    var target_html = document.getElementById("targetlink").innerHTML="";
+     
  
 
     }
 
-    // searchMusic(){
-    //     this._spotifyService.searchMusic(this.searchStr).subscribe(res => {
-    //         console.log(res.artists.items);
-    //     });
-    // }
+   
+
+
 }
