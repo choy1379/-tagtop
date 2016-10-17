@@ -15,8 +15,27 @@
     <div id ="test" class="row">
         <p></p>
         <div id="card" *ngFor="let res of data[0]"  class="col-md-3 col-sm-4 col" style="position:relative; cursor:pointer;" (click)="myAction(res)">                   
-                    <div id="card" class="card" style="width:100%;">
-                          <div class="card-image">
+                
+                <div id="youtube" *ngIf="res.kind != undifined" >
+                       <div class="youtubecard">
+                           <div class="card-image" style="float:right">
+                                <img style={width:10px,height:10px;} src="app/source/youtube.png">
+                          </div>
+                        <div class="youtubetop">
+                             <img style="max-width: 100%; height: 150px;" src={{res.snippet.thumbnails.medium.url}}>
+                        </div>
+                        <div class="youtubetext">
+                            
+                            <p>{{res.snippet.title}}</p>
+                        </div>
+                    </div> 
+                </div>
+                <div *ngIf="res.kind == undifined">
+                    <div id="card" class="card" style="width:100%;">            
+                          <div class="card-image" style="float:right">
+                                <img style={width:10px,height:10px;} src="app/source/twitter.png">
+                          </div>
+                           <div class="card-image">
                                 <img style={width:10px,height:10px;} src={{res.user.profile_image_url}}>
                           </div>
                             <div class="right-content">
@@ -34,26 +53,15 @@
                         
                             </div>
                     </div>
+                </div>
              </div>
     </div>
-           <!--<div id="card" *ngFor="let res of youtubeResult" class="col-md-3 col-sm-3 col" style="position:relative; cursor:pointer; margin-right: 20px; margin-bottom:20px" (click)="Youtubepop(res)">                
-                    <div class="youtubecard">
-                        <div class="youtubetop">
-                             <img style="max-width: 100%; height: auto;" src={{res.snippet.thumbnails.medium.url}}>
-                        </div>
-                        <div class="youtubetext">
-                            <p>{{res.snippet.title}}</p>
-                        </div>
-                    </div> 
-                    
-           </div>-->
   <div id ="test2" class="fancybox-overlay fancybox-overlay-fixed">
         <div class="fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened" tabindex="-1" style="width: auto; height: auto; position: absolute; top: 20%; left: 35%; right: 15%; opacity: 1; overflow: visible;">
                 <div class="fancybox-skin" style="padding: 5px; width: 50%; height: auto;">
                             <div class="fancybox-outer">
                                     <div class="fancybox-inner" style="overflow: hidden; width: 100%; height: auto; cursor: pointer;">
                                             <div class="detail_content">
-                                
                                                 <div class="profile_img">
                                                     <a id ="moreinfo" href="#" target="_blank" class="author_link" title="사용자에게가기">
                                                         <img id ="user_profile" src="">
@@ -61,9 +69,8 @@
                                                     </a>
                                                 </div>
                                                 <div id="user_time" class="user_time">usertime</div>
-                                                <!--2016-10-16 이미지 없는거 disable    아직 x            -->
-                                      
-                                                 <img id="content_image" src = "" style="" class="imagesizes">
+                                                <iframe id="player" style="display:none;" width="430" height="241" src=""></iframe>
+                                              <img id="content_image" src = "" style="" class="imagesizes">
                                               
                                                     <div id="content" class="content"> content
                                                      </div>
@@ -77,4 +84,5 @@
                         <a title="Close" (click)="Close()" class="fancybox-item fancybox-close" href="javascript:;"></a>
                 </div>
         </div>
- </div>
+</div>
+                                              

@@ -19,7 +19,7 @@ import 'rxjs/add/operator/map';
   margin-top: 20px;
   margin-left: 20px;
   width:286px;
-  height:200px;
+  height:280px;
 
 }
 
@@ -33,7 +33,7 @@ import 'rxjs/add/operator/map';
 {
     position: relative;
     width: 100%;
-    height: 200px;
+    height: 180px;
     overflow: hidden;
     text-align: center;
 }
@@ -94,14 +94,16 @@ import 'rxjs/add/operator/map';
 }
 #card:hover{background-color:#dcdcdc  ;
  }
+
   `]
 })
 @Injectable()
 export class SearchComponent implements OnInit{
-    searchquery='태그';
+    searchquery='아이린';
     searchStr:string;
     tweetsdata:any;
     youtubeResult:any;
+     b:any;
     data = new Array();
     
     // showDialog = false;
@@ -122,7 +124,7 @@ export class SearchComponent implements OnInit{
               var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('https://tagtops.herokuapp.com/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
         
@@ -133,7 +135,7 @@ export class SearchComponent implements OnInit{
     var searchterm = 'query=' + this.searchquery;
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
-    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
         this.data[0] = res.json().data.statuses;
         }); 
     this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
@@ -150,22 +152,27 @@ export class SearchComponent implements OnInit{
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
   
 
-    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
        this.tweetsdata = res.json().data.statuses;  
        this.data[0] = this.tweetsdata;
-
+       
          //  10-17 array 합쳤는데 .. 수정해야됨 
             for(var i=0; this.data[1].length>i; i++)
             {  
-                this.data[0][this.data[0].length]= this.data[1][i];
+                this.data[0][this.data[0].length]= this.b[i];
             }
+
+            this.data[0].sort(function(){return 0.5-Math.random()});
+
             console.log("1번실행");
+ 
+            
         }); 
 
     this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
       this.youtubeResult = res.items;
-      this.data[1] = this.youtubeResult;
-      console.log("2번실행");
+      this.b = JSON.parse(JSON.stringify(this.youtubeResult ));
+       console.log(this.b);
         });
      
    console.log("3번실행");
@@ -178,9 +185,30 @@ export class SearchComponent implements OnInit{
     
   
      myAction = function(res:any){
-   
+ 
     var divTest = document.getElementById("test").style.display='block';
     var divTest2 = document.getElementById("test2").style.display='inline';
+    
+    if(res.kind == "youtube#searchResult")
+    {
+      console.log(res.id.videoId);
+      // 이전값들 지워줘야된다 try,catch문 고려, 위에 선언을 document.id 까지선언하고 밑에서 세부사항 수정하도록 고려
+      // 2016-10-18 ~ 이번주까지 
+      var youtubedisplay = document.getElementById("player").style.display='inline';
+       var user_Profile= document.getElementById("user_profile").setAttribute('src','');
+        var detailUsers = document.getElementById("moreinfo").setAttribute('href','');
+        var user_Names = document.getElementById("user_name").innerHTML = '';
+        var postlink = document.getElementById("post_link").setAttribute('href','');
+        var target = document.getElementById("targetlink").setAttribute('href','');
+        var target_htmls= document.getElementById("targetlink").innerHTML='';
+        var user_time = document.getElementById("user_time").innerHTML = '';
+        var contents = document.getElementById("content").innerHTML = '';
+        var k =  "https://www.youtube.com/embed/"+res.id.videoId+"?enablejsapi=1&theme=light&showinfo=0";
+        var youtubecontents = document.getElementById("player").setAttribute('src',k);
+        console.log(k);
+    }
+    else
+    {
     var detailUser = document.getElementById("moreinfo");
     var user_Profile= document.getElementById("user_profile").setAttribute('src',res.user.profile_image_url_https);
     var detailUser_set = "https://twitter.com/"+res.user.screen_name;
@@ -222,20 +250,16 @@ export class SearchComponent implements OnInit{
     else if (diff <= 777600) {usertime =  "1 주일 전";}
     var user_time = document.getElementById("user_time").innerHTML = usertime;
  
-   
-  // 2016-10-16 content image
-   
+    var content = document.getElementById("content").innerHTML = res.text;
 
-   var content = document.getElementById("content").innerHTML = res.text;
-
-   if(res.entities.media != Object)
-   {       
-        var content_image_none = document.getElementById("content_image").setAttribute('style','');
-        var content_image = document.getElementById("content_image").setAttribute('src',res.entities.media[0].media_url+":small");
-        var content = document.getElementById("content").innerHTML = res.text;
-   }
-   //
-   
+    if(res.entities.media != Object)
+    {       
+          var content_image_none = document.getElementById("content_image").setAttribute('style','');
+          var content_image = document.getElementById("content_image").setAttribute('src',res.entities.media[0].media_url+":small");
+          var content = document.getElementById("content").innerHTML = res.text;
+    }
+    
+    }
   
    }
 
@@ -248,8 +272,8 @@ export class SearchComponent implements OnInit{
 
     var target_none = document.getElementById("targetlink").setAttribute('href','');
     var target_html = document.getElementById("targetlink").innerHTML="";
-     
- 
+    var youtubecontents = document.getElementById("player").setAttribute('src','');
+    var youtubedisplay = document.getElementById("player").style.display='none';
 
     }
 
