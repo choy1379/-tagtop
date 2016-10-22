@@ -25,6 +25,12 @@ export class SpotifyService{
        .map(res => res.json());
     
     }
+    
+    dbsearch()
+    {     return this._http.get('/api/v1/todos')
+            .map(res => res.json());
+    
+    }
     // searchtwitter(str:string)
     // {   
     //     var bearerheader = 'Bearer ' + consumerapi;

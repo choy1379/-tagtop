@@ -9,12 +9,13 @@
          <input id="hashtags" class="form-control" placeholder="#태그를 이용해 검색해주세요" type="text" [(ngModel)]="searchquery" [ngModelOptions]="{standalone: true}" (keyup.enter)="searchcall()">
          </div>
          <div class="col-md-4">
-          <button class="btn btn-default" (click)="searchcall()">Search</button>
+          <button id ="searchcall" class="btn btn-default" (click)="searchcall()">Search</button>
+        <button id ="dbsearch" class="btn btn-default" (click)="dbcall()">dbtest</button>
          </div>
      </div>
     <div id ="test" class="row">
         <p></p>
-        <div id="card" *ngFor="let res of data[0]"  class="col-md-3 col-sm-4 col" style="position:relative; cursor:pointer;" (click)="myAction(res)">                   
+        <div id="card" *ngFor="let res of SumArrayData[0]"  class="col-md-3 col-sm-4 col" style="position:relative; cursor:pointer;" (click)="myAction(res)">                   
                 
                 <div id="youtube" *ngIf="res.kind != undifined" >
                        <div class="youtubecard">
@@ -56,12 +57,16 @@
                 </div>
              </div>
     </div>
+     <div id="loading" class="loading" style="display:none">로딩중  </div>
+     <div id="readmore" class="readmore" style="display:none" (click)="readmore()">Readmore</div>
+
   <div id ="test2" class="fancybox-overlay fancybox-overlay-fixed">
         <div class="fancybox-wrap fancybox-desktop fancybox-type-html fancybox-opened" tabindex="-1" style="width: auto; height: auto; position: absolute; top: 20%; left: 35%; right: 15%; opacity: 1; overflow: visible;">
-                <div class="fancybox-skin" style="padding: 5px; width: 50%; height: auto;">
+               <!--모바일 에서 작은거 수정해야됨 중요도 낮음 10/18-->
+                <div id="fancybox_skin"  class="fancybox-skin" style="padding: 5px; width: 50%; height: auto;">
                             <div class="fancybox-outer">
                                     <div class="fancybox-inner" style="overflow: hidden; width: 100%; height: auto; cursor: pointer;">
-                                            <div class="detail_content">
+                                            <div id="detail_content" class="detail_content" style="">
                                                 <div class="profile_img">
                                                     <a id ="moreinfo" href="#" target="_blank" class="author_link" title="사용자에게가기">
                                                         <img id ="user_profile" src="">
@@ -75,7 +80,8 @@
                                                     <div id="content" class="content"> content
                                                      </div>
                                                 <a id="targetlink" target="_blank" href="#">https </a>
-                                                <div class="post_link">
+                                                <p></p>
+                                                <div id="postlink" class="post_link" style="">
                                                     <a id ="post_link" href="#" title="새창" target="_blank">원문보기[새창]</a>
                                                 </div>
                                             </div>

@@ -3,7 +3,7 @@ import { Http, Headers} from '@angular/http';
 import {SpotifyService} from '../../services/spotify.service';
 import 'rxjs/add/operator/map';
 
- declare  var $:any;
+declare  var $:any;
 
 
 @Component({
@@ -15,6 +15,16 @@ import 'rxjs/add/operator/map';
 			color:black;
 		}
 
+.loading
+{
+  position: relative;
+    width: 100%;
+    height: 600px;
+    padding: 10px 0px;
+    text-align: center;
+    text-indent: -9999px;
+    // background-image: url("../../source/fancybox_loading.gif");
+}
 .card {
   margin-top: 20px;
   margin-left: 20px;
@@ -86,6 +96,19 @@ import 'rxjs/add/operator/map';
      height: 300px;
     // display: inline-block;
     }
+.readmore{
+   position: relative;
+    width: 100%;
+    padding: 10px 0px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    background: #ddd;
+    color: black;
+    margin: 10px 0px;
+
+}
 .imagesizes{
  width: 80%; height: auto;
 }
@@ -103,28 +126,33 @@ export class SearchComponent implements OnInit{
     searchStr:string;
     tweetsdata:any;
     youtubeResult:any;
-     b:any;
+     tweetsArray:any;
+     YoutubeArray:any;
+     readmore_count=0;
     data = new Array();
+    SumArrayData = new Array( new Array(0), new Array(0) );
+    lquery :any;
+    dbsearch : any;
+
     
-    // showDialog = false;
  
 
     constructor(private http: Http,private _spotifyService:SpotifyService){
     }
 
      makecall(){
-        //     var headers = new Headers();
-        //     headers.append('Content-Type', 'application/X-www-form-urlencoded');
+            var headers = new Headers();
+            headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-        //     this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
-        //     console.log(res);     
-        // });
+            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            console.log(res);     
+        });
     }
      ngOnInit(){
               var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('https://tagtops.herokuapp.com/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
         
@@ -135,7 +163,7 @@ export class SearchComponent implements OnInit{
     var searchterm = 'query=' + this.searchquery;
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
-    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
+    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
         this.data[0] = res.json().data.statuses;
         }); 
     this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
@@ -144,45 +172,134 @@ export class SearchComponent implements OnInit{
     ///////////////////
      }
     searchcall(){
+    //  $('#loading').show();
 
-     
-    var headers = new Headers();
-    var searchterm = 'query=' + this.searchquery;
+     if(this.readmore_count>1 || this.readmore_count ==0)
+       {
+          if(this.lquery != this.searchquery)
+          {
+          
+              var headers = new Headers();
+              var searchterm = 'query=' + this.searchquery;
 
-    headers.append('Content-Type', 'application/X-www-form-urlencoded');
+                headers.append('Content-Type', 'application/X-www-form-urlencoded');
+                this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+                this.tweetsdata = res.json().data.statuses;  
+                this.tweetsArray = JSON.parse(JSON.stringify(this.tweetsdata ));
+                this.lquery = this.searchquery;
+                this.readmore_count =0;
+                this.SumArrayData[0] = new Array();
+                  for(var i =0; i<5; i++)
+                  {
+                    this.SumArrayData[0][i] = this.tweetsArray[i];
+                  }
+                  for(var i=0; this.YoutubeArray.length>i; i++)
+                  {  
+                    this.SumArrayData[0][this.SumArrayData[0].length]= this.YoutubeArray[i];
+                  }
+                  this.SumArrayData[0].sort(function(){return 0.5-Math.random()});
+          
+                }); 
+
+              this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
+              this.youtubeResult = res.items;
+              this.YoutubeArray = JSON.parse(JSON.stringify(this.youtubeResult ));
+        
+                });
+
+          }
+       }
+       else
+       {
   
+              var headers = new Headers();
+              var searchterm = 'query=' + this.searchquery;
 
-    this.http.post('https://tagtops.herokuapp.com/search', searchterm, {headers: headers}).subscribe((res) => {
-       this.tweetsdata = res.json().data.statuses;  
-       this.data[0] = this.tweetsdata;
-       
-         //  10-17 array 합쳤는데 .. 수정해야됨 
-            for(var i=0; this.data[1].length>i; i++)
-            {  
-                this.data[0][this.data[0].length]= this.b[i];
-            }
-
-            this.data[0].sort(function(){return 0.5-Math.random()});
-
-            console.log("1번실행");
+            headers.append('Content-Type', 'application/X-www-form-urlencoded');
+          
  
-            
-        }); 
+                this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+                this.tweetsdata = res.json().data.statuses;  
+                this.tweetsArray = JSON.parse(JSON.stringify(this.tweetsdata ));
+                this.lquery = this.searchquery;
+                this.SumArrayData[0] = new Array();
+                  for(var i =0; i<5; i++)
+                  {
+                    this.SumArrayData[0][i] = this.tweetsArray[i];
+                  }
+                  for(var i=0; this.YoutubeArray.length>i; i++)
+                  {  
+                    this.SumArrayData[0][this.SumArrayData[0].length]= this.YoutubeArray[i];
+                  }
+                  this.SumArrayData[0].sort(function(){return 0.5-Math.random()});
+          
+                }); 
 
-    this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
-      this.youtubeResult = res.items;
-      this.b = JSON.parse(JSON.stringify(this.youtubeResult ));
-       console.log(this.b);
-        });
-     
-   console.log("3번실행");
+              this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
+              this.youtubeResult = res.items;
+              this.YoutubeArray = JSON.parse(JSON.stringify(this.youtubeResult ));
+        
+                });
+       }
 
-  
-
-
-
+    var readmore = document.getElementById("readmore").style.display='block';
+    var searchloading = document.getElementById("loading").style.display='inline';
     }
     
+   readmore()
+   {
+     this.readmore_count ++;
+
+          //3번최대 걸어두고 한페이지최대 60개로 제한
+        if(this.readmore_count <4)
+        {
+          switch (this.readmore_count){
+            case 1:
+                    for(var i =10; i<15; i++)
+                    {
+                      this.SumArrayData[0][i] = this.tweetsArray[i];
+                    }
+                    break;
+            case 2: 
+                  for(var i = 15; i<20; i++)
+                  {
+                      this.SumArrayData[0][i] = this.tweetsArray[i];
+                  }
+                  break;
+            case 3:
+                  for(var i= 20; i<25; i++)
+                  {
+                    this.SumArrayData[0][i] = this.tweetsArray[i];
+                  }
+                  break;
+          }
+        }
+        else
+        {
+          alert("더보기는 3번으로 제한됩니다 ")
+
+          //2016-10-19 리셋...
+          // this.SumArrayData[0] = new Array();
+    
+       
+        }
+   
+
+          //jquey 샘플
+          // $('#readmore').on('click', function() {$('#searchcall').trigger('click',this.readmore_Count); });
+
+   }
+   //2016 db test
+   dbcall()
+   {   
+    
+            var headers = new Headers();
+            headers.append('Content-Type', 'application/X-www-form-urlencoded');
+            
+            this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
+            console.log(res);     
+        });
+   }
   
      myAction = function(res:any){
  
@@ -193,7 +310,6 @@ export class SearchComponent implements OnInit{
     {
       console.log(res.id.videoId);
       // 이전값들 지워줘야된다 try,catch문 고려, 위에 선언을 document.id 까지선언하고 밑에서 세부사항 수정하도록 고려
-      // 2016-10-18 ~ 이번주까지 
       var youtubedisplay = document.getElementById("player").style.display='inline';
        var user_Profile= document.getElementById("user_profile").setAttribute('src','');
         var detailUsers = document.getElementById("moreinfo").setAttribute('href','');
@@ -203,9 +319,12 @@ export class SearchComponent implements OnInit{
         var target_htmls= document.getElementById("targetlink").innerHTML='';
         var user_time = document.getElementById("user_time").innerHTML = '';
         var contents = document.getElementById("content").innerHTML = '';
-        var k =  "https://www.youtube.com/embed/"+res.id.videoId+"?enablejsapi=1&theme=light&showinfo=0";
+        var k =  "http://www.youtube.com/embed/"+res.id.videoId+"?enablejsapi=1&theme=light&showinfo=0";
         var youtubecontents = document.getElementById("player").setAttribute('src',k);
-        console.log(k);
+        var detail_content = document.getElementById("fancybox_skin").setAttribute('style','width:430px;');
+        var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.description;
+        var postlinks = document.getElementById("postlink").style.display = 'none';
+        console.log(res);
     }
     else
     {
@@ -274,6 +393,7 @@ export class SearchComponent implements OnInit{
     var target_html = document.getElementById("targetlink").innerHTML="";
     var youtubecontents = document.getElementById("player").setAttribute('src','');
     var youtubedisplay = document.getElementById("player").style.display='none';
+    var postlinks = document.getElementById("postlink").style.display = 'inline';
 
     }
 

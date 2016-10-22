@@ -3,6 +3,7 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {SearchComponent} from './components/search/search.component';
 import {AboutComponent} from './components/about/about.component';
+import {CollectComponent} from './components/collect/collect.component';
 
 const appRoutes: Routes = [
     {
@@ -13,6 +14,10 @@ const appRoutes: Routes = [
         path:'about',
         component:AboutComponent
     },
+    {
+        path:'collect',
+        component:CollectComponent
+    }
 
 ];
 

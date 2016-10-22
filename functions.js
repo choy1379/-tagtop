@@ -1,5 +1,11 @@
 var request = require('request');
 var config = require('./config');
+var express = require('express');
+var router = express.Router();
+var mongojs = require('mongojs');
+var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+
+
 
 functions = {
  
@@ -26,7 +32,7 @@ functions = {
         var encsearchquery = encodeURIComponent(searchquery);
         var bearerheader = 'Bearer ' + config.bearertoken;
         request.get('https://api.twitter.com/1.1/search/tweets.json?q=' + encsearchquery +
-         '&result_type=recent&count=20&include_entities=true&filter:media', {headers: {Authorization: bearerheader}}, function(error, body, response) {
+         '&result_type=recent&count=90&include_entities=true&filter:media', {headers: {Authorization: bearerheader}}, function(error, body, response) {
              if(error)
              console.log(error);
              else {
@@ -50,21 +56,6 @@ functions = {
              }
          })
     }
-    // youtubesearch : function(req,res)
-    // {
-    //        var searchquery = 'req.body.query';
-    //       const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
-    //     const API_TOKEN = 'AIzaSyB2QPeJGn6xo9rrjjzZrk9OT33aO-Ubzxo';
-
-    //     request.get(`${BASE_URL}?q=${searchquery}&part=snippet&key=${API_TOKEN}`, function(error, body, response) {
-    //          if(error)
-    //          console.log(error);
-    //          else {
-    //              res.json({success: true, Youtubedata:JSON.parse(body.body)});
-    //          }
-    //      })
-    // }
-    
 
 }
 
