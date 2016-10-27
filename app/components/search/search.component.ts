@@ -169,10 +169,9 @@ export class SearchComponent implements OnInit{
     this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
         this.data[1] = res.items
         });
-    ///////////////////
+
      }
     searchcall(){
-    //  $('#loading').show();
 
      if(this.readmore_count>1 || this.readmore_count ==0)
        {
@@ -277,10 +276,6 @@ export class SearchComponent implements OnInit{
         else
         {
           alert("더보기는 3번으로 제한됩니다 ")
-
-          //2016-10-19 리셋...
-          // this.SumArrayData[0] = new Array();
-    
        
         }
    
@@ -289,17 +284,7 @@ export class SearchComponent implements OnInit{
           // $('#readmore').on('click', function() {$('#searchcall').trigger('click',this.readmore_Count); });
 
    }
-   //2016 db test
-   dbcall()
-   {   
-    
-            var headers = new Headers();
-            headers.append('Content-Type', 'application/X-www-form-urlencoded');
-            
-            this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
-            console.log(res);     
-        });
-   }
+
   
      myAction = function(res:any){
  

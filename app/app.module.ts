@@ -9,6 +9,8 @@ import {SearchComponent} from './components/search/search.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {AboutComponent} from './components/about/about.component';
 import {CollectComponent} from './components/collect/collect.component';
+import {searchgridComponent} from './components/searchgrid/searchgrid.component';
+import {AgGridModule} from 'ag-grid-ng2/main';
 
 import {routing} from './app.routing';
 
@@ -18,12 +20,14 @@ import {routing} from './app.routing';
               routing, 
               FormsModule, 
               HttpModule,
+              AgGridModule.withNg2ComponentSupport()
     ],
   declarations: [ AppComponent,
                   SearchComponent,
                   NavbarComponent,
                   AboutComponent,
-                  CollectComponent],
+                  CollectComponent,
+                  searchgridComponent],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

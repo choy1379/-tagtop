@@ -141,10 +141,8 @@ var SearchComponent = (function () {
         this._spotifyService.searchYoutube(this.searchquery).subscribe(function (res) {
             _this.data[1] = res.items;
         });
-        ///////////////////
     };
     SearchComponent.prototype.searchcall = function () {
-        //  $('#loading').show();
         var _this = this;
         if (this.readmore_count > 1 || this.readmore_count == 0) {
             if (this.lquery != this.searchquery) {
@@ -223,14 +221,6 @@ var SearchComponent = (function () {
         }
         //jquey 샘플
         // $('#readmore').on('click', function() {$('#searchcall').trigger('click',this.readmore_Count); });
-    };
-    //2016 db test
-    SearchComponent.prototype.dbcall = function () {
-        var headers = new http_1.Headers();
-        headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
-            console.log(res);
-        });
     };
     SearchComponent = __decorate([
         core_1.Component({

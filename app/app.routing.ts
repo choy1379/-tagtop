@@ -4,7 +4,7 @@ import {Routes, RouterModule} from '@angular/router';
 import {SearchComponent} from './components/search/search.component';
 import {AboutComponent} from './components/about/about.component';
 import {CollectComponent} from './components/collect/collect.component';
-
+// import {searchgridComponent} from './components/searchgrid/searchgrid.component';
 const appRoutes: Routes = [
     {
         path:'',
@@ -18,6 +18,11 @@ const appRoutes: Routes = [
         path:'collect',
         component:CollectComponent
     }
+    //  {
+    //     path:'collect',
+    //     component:searchgridComponent
+    // }
+
 
 ];
 

@@ -22,7 +22,8 @@
       '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
       '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
-
+      'ag-grid-ng2' : 'node_modules/ag-grid-ng2',
+      'ag-grid' : 'node_modules/ag-grid',
       // other libraries
       'rxjs':                       'npm:rxjs',
       'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
@@ -33,6 +34,12 @@
         main: './main.js',
         defaultExtension: 'js'
       },
+      'ag-grid-ng2': {
+        defaultExtension: 'js'
+      },
+       'ag-grid': {
+                    defaultExtension: "js"
+                },
       rxjs: {
         defaultExtension: 'js'
       },

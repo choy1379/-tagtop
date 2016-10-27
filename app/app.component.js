@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var spotify_service_1 = require('./services/spotify.service');
-var twitter_service_1 = require('./services/twitter.service');
 var AppComponent = (function () {
     function AppComponent() {
     }
@@ -19,7 +18,7 @@ var AppComponent = (function () {
             moduleId: module.id,
             selector: 'my-app',
             templateUrl: 'app.component.html',
-            providers: [spotify_service_1.SpotifyService, twitter_service_1.TwitterService]
+            providers: [spotify_service_1.SpotifyService]
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);
