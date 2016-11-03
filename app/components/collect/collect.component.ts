@@ -1,10 +1,8 @@
-import {searchgridComponent} from '../searchgrid/searchgrid.component';
-import { Component,Input,OnInit,Injectable } from '@angular/core';
+import { Component,Input,OnInit,Injectable,OnDestroy } from '@angular/core';
 import { Http, Headers} from '@angular/http';
 import {Collect}  from '../collect';
-import {CommonModule} from "@angular/common"
-import {FormsModule} from "@angular/forms"
 import {GridOptions} from 'ag-grid/main';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 declare  var $:any;
 
 
@@ -13,43 +11,116 @@ declare  var $:any;
     selector: 'collect',
     templateUrl: 'collect.component.html',
      styleUrls: ['collect.component.css'],
-    //  providers: [searchgridComponent]
+    //  providers:[searchgridComponent]
 })
 @Injectable()
-export class CollectComponent implements OnInit {
+export class CollectComponent implements OnInit,OnDestroy {
     public gridOptions:GridOptions;
+    public gridOptions2:GridOptions;
+    //Deep copy 
+    SumArrayData = new Array(new Array(0));
+    
+ VailidateForm : FormGroup;
 
- constructor(private http:Http){
-
+ constructor(private http:Http,fb: FormBuilder){
+        //그리드 옵션 정리
         this.gridOptions = <GridOptions>{};
         this.gridOptions.columnDefs = this.createColumnDefs();
+        this.gridOptions2 = <GridOptions>{};
+        this.gridOptions2.columnDefs = this.createColumnDefs2();
+
+    
+
+        //validate check
+        this.VailidateForm = fb.group({
+        'email' : [null, Validators.required],
+        'id' : [null, Validators.required],
+        'hashtag' : [null , Validators.required],
+        'date' : [null , Validators.required]
+      })
+      console.log(this.VailidateForm);
+      this.VailidateForm.valueChanges.subscribe( (form: any) => {
+        // console.log('form changed to:', form);
+      }
+    );
+
+        
  }
 
-     resultData  :any   //result값 받기
+    //static 변수 
+    resultData  :any  
     searchdata : any
-    tempdata : any 
-    ngcount=0 
- collect : Collect[];
+    ngcount = 0 
+    collect : Collect[];
+    since_id = "0" 
+    max_id = "0"
+    tempdata :any
+  
 
 onRowClicked(event: any) { 
-        this.searchdata = event.data;
-      this.changeState('searchResult');
-  //  this._searchgrid.callback(this.searchdata
+      //결과값 hide 비동기써서 그리드 로드 시키고 api 셋로우 데이터
+      this.searchdata = event.data;
+      
+       var query = {
+                        "name" : this.searchdata.name,
+                        "hashtag" : this.searchdata.hashtag
+       }
 
+       // ajax success 는 왜 클라이언트단 전역변수를 못가져오는걸까....
+      //     $.ajax({
+      //     url: 'http://localhost:4100/searchid',
+      //     type: 'POST',
+      //     data: {
+          
+      //             "name" : this.searchdata.name,
+      //             "hashtag" : this.searchdata.hashtag,
+                  
+         
+      //     },
+      //     success : function (res:any) 
+      //     {
+      //       this.resultData = res; 
+
+        
+      //    this.gridOptions2.api.setRowData(this.resultData)     
+      //    var resultsearch_show = document.getElementById("resultsearch").style.display='inline';  
+      //     }   
+      // })
+
+
+        var headers = new Headers(); 
+        headers.append('Content-Type', 'application/json')
+        this.http.post('http://localhost:4100/searchid',query,{headers: headers}).subscribe((res) => {
+        this.resultData = res.json(); 
+
+        
+         this.gridOptions2.api.setRowData(this.resultData)     
+         var resultsearch_show = document.getElementById("resultsearch").style.display='inline';    
+         });
 }
 
- ngOnInit(){
-   
+ngOnInit(){
+    //테스트위해 잠심 11/02
+     var headers = new Headers();
+            headers.append('Content-Type', 'application/X-www-form-urlencoded');
+            
+            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            console.log(res);     
+        });
+        
+        console.log("권한 활성화");
+
      this.collect = [];
       var headers = new Headers(); 
       headers.append('Content-Type', 'application/json');
       this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
       this.collect = res.json();
       this.gridOptions.api.setRowData(res.json()) 
+      var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
         });
    
   }
-  
+ 
  changeState(state, key){
     console.log('Changing state to: '+state);
     if(key){
@@ -57,6 +128,8 @@ onRowClicked(event: any) {
       this.activeKey = key;
     }
     this.appState = state;
+         //temp validate check
+ 
   }
 
    addinfo(
@@ -68,9 +141,7 @@ onRowClicked(event: any) {
      twitter:string,
 
     ){
-     
       
-
       var addinfo = {
         email:email,
         name: name,
@@ -78,21 +149,141 @@ onRowClicked(event: any) {
         frcal: frcal,
         tocal: tocal,
         twitter:twitter
-      }
-      
-   
-      console.log(addinfo);
-     
-        // ajax로 send 해봄 
-        $.ajax({
-        type: 'POST',
-        data: addinfo,
-        contentType: 'application/X-www-form-urlencoded',
-        url: 'http://localhost:4100/dbinsert'
-      });
-      
-      this.changeState('default');
+
+      }     
+  // Hashtag search&insert count maximum 500 2016/10/30
+  // 11/02 날짜 저장값 때문에 임시블록
+    // $.ajax({
+    //         type: 'POST',
+    //             data: {
+    //                       "hashtag" : hashtag,
+    //                       "email" :  email,
+    //                       "frcal" : frcal,
+    //                       "tocal" : tocal,
+    //                       "twitter" : twitter,
+    //                      "name"    : name
+                        
+    //                 },
+    //         contentType: 'application/X-www-form-urlencoded',
+    //         url: 'http://localhost:4100/dbUserinsert'
+    //     });
+   this.searchajax(hashtag,addinfo);
+   console.log("서치 완료")
+   this.changeState('appState','default')
+
   }
+
+  //500개 기준잡음 성능 좋게방법이.... 11/02 
+  searchajax(data:any,addinfo:any)
+  {
+    //1
+    var promis = $.ajax({
+        url: 'http://localhost:4100/collectSearch',
+        type: 'POST',
+        async: false, //sync
+        data: {
+            query: {
+                "hashtag" : data,
+                "since_id" : this.since_id,
+                "addinfo" : addinfo
+            }
+        }   
+    })
+    promis.then(this.searchajax2)
+  }
+  searchajax2(res:any)
+  { 
+    // 2
+    console.log(res.data)
+       $.ajax({
+        url: 'http://localhost:4100/collectSearch',
+        type: 'POST',
+        async: false,
+        data: {
+            query: {
+                "hashtag" : res.searchquery,
+                "since_id" : JSON.stringify(res.data.search_metadata.next_results).slice(9,27),
+                "addinfo" : res.addinfo
+            }
+        },
+        success : function(res:any)
+        { 
+          //3
+          console.log(res.data)
+            $.ajax({
+                url: 'http://localhost:4100/collectSearch',
+                type: 'POST',
+                async: false,
+                data: {
+                    query: {
+                        "hashtag" : res.searchquery,
+                        "since_id" : JSON.stringify(res.data.search_metadata.next_results).slice(9,27),
+                        "addinfo" : res.addinfo
+                    }
+                },
+                success : function(res:any)
+                {   //4
+                    console.log(res.data)
+                      $.ajax({
+                          url: 'http://localhost:4100/collectSearch',
+                          type: 'POST',
+                          async: false,
+                          data: {
+                              query: {
+                                  "hashtag" : res.searchquery,
+                                  "since_id" : JSON.stringify(res.data.search_metadata.next_results).slice(9,27),
+                                  "addinfo" : res.addinfo
+                              }
+                          },
+                          success : function(res:any)
+                          {
+                            //5
+                                console.log(res.data)
+                                  $.ajax({
+                                      url: 'http://localhost:4100/collectSearch',
+                                      type: 'POST',
+                                      async: false,
+                                      data: {
+                                          query: {
+                                              "hashtag" : res.searchquery,
+                                              "since_id" : JSON.stringify(res.data.search_metadata.next_results).slice(9,27),
+                                              "addinfo" : res.addinfo
+                                          }
+                                      },
+                                      success : function(res:any)
+                                      {
+                                          // 11/02 날짜 저장값 때문에 임시블록
+                                          //  for(var i = 0 ; i < res.data.length ; i++)
+                                          //  {
+                                          //         $.ajax({
+                                          //         type: 'POST',
+                                          //             data: {
+                                          //                         "hashtag" : res.searchquery,
+                                          //                         "name"   : res.addinfo.name,
+                                          //                         "email" :  res.addinfo.email,
+                                          //                         "frcal" : res.addinfo.frcal,
+                                          //                         "tocal" : res.addinfo.tocal,
+                                          //                         "twitter" : res.addinfo.twitter,
+                                          //                         "SearchResult" : res.data[i]
+                                          //                 },
+                                          //         contentType: 'application/X-www-form-urlencoded',
+                                          //         url: 'http://localhost:4100/dbinsert'
+                                          //     });
+                                          //  }
+                                      }
+                                  })
+                            
+                          }
+                      })
+                  
+                }
+            })
+          
+        }
+    })
+  }
+
+
   inputcal()
   {
     $('#frcal').datepicker({
@@ -111,6 +302,7 @@ onRowClicked(event: any) {
    });
   
   }
+ 
 
     private createColumnDefs() {
         return [
@@ -124,7 +316,16 @@ onRowClicked(event: any) {
         ];
     }
     
+  private createColumnDefs2() {
+        return [
+        { headerName: "Name", field: "name", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "hashtag", field: "hashtag", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "tocal", field: "tocal", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "소셜미디어", field: "twitter", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+    
 
+        ];
+    }
     
 
  }

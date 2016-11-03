@@ -20,22 +20,39 @@ functions = {
   },
  
    searchid :function(req, res) {
+     console.log(req.body)
+     console.log(req.body.name)
+     console.log(req.body.hashtag)
 
-   
-    var searchid = JSON.stringify(req.body).slice(2, 10)  // name 만 자른거 
-    db.collect.find({"name": searchid}, (err, collect) => {
-      if (err) {
-        return res.send(err);
-      }
-      res.json(collect);
-   
-    });
+     //임시 dummy 테이블 
+      db.dummy.find({"name": req.body.name , "hashtag" : req.body.hashtag}, (err, collect) => {
+        if (err) {
+          return res.send(err);
+        }
+        res.json(collect);
+    
+      });
   },
 
     hashtagins: (req,res) => {
 
     var req = req.body;
+    console.log(req)
 
+     db.dummy.save(req, function(err, result){
+                if(err){
+                    res.send(err); 
+                    console.log(err);
+                } else {
+                    res.json(result);
+                    console.log(result);
+                }
+            });
+        
+    },
+    Userinsert : (req,res) => {
+    var req = req.body;
+    console.log(req)
      db.collect.save(req, function(err, result){
                 if(err){
                     res.send(err); 

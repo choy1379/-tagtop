@@ -148,6 +148,9 @@ var SearchComponent = (function () {
             if (this.lquery != this.searchquery) {
                 var headers = new http_1.Headers();
                 var searchterm = 'query=' + this.searchquery;
+                // //2016-10-28 그리드 서치쿼리 테스트 
+                // var searchterm = 'query=' + this.searchquery + 'maxid='+ maxids;
+                //
                 headers.append('Content-Type', 'application/X-www-form-urlencoded');
                 this.http.post('http://localhost:4100/search', searchterm, { headers: headers }).subscribe(function (res) {
                     _this.tweetsdata = res.json().data.statuses;
