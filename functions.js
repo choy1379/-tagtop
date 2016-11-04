@@ -70,8 +70,11 @@ functions = {
                        config.sumarray[i].created_at = ConvertDt
 
                     }
-
-                    res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});                
+                    if(config.sumarray.length < 100)
+                    {
+                        res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});
+                    }
+                        res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});                
                 }
             })
         }
@@ -91,8 +94,7 @@ functions = {
                             config.sumarray[config.sumarray.length-1].created_at = ConvertDt
             
                         }
-                        console.log(config.sumarray[100])
-                        console.log(config.sumarray[101])
+
                         console.log(config.sumarray.length)
 
                         if(config.sumarray.length ==500)
@@ -101,13 +103,17 @@ functions = {
                         }
                         else
                         {
-                            if(config.sumarray.length != 100)
+                            if(config.sumarray.length == 100 || config.sumarray.length == 200 || config.sumarray.length == 300 || config.sumarray.length == 400 || config.sumarray.length == 500)
                             {
-                                res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});
+                                res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});
+                            }
+                            else if (config.sumarray.length > 100)
+                            { 
+                                res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});                      
                             }
                             else
                             {
-                                res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});
+                                res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});                      
                             }
                         }
                     }
@@ -115,28 +121,6 @@ functions = {
             })
         }
     },
-    // collectSearch2: function(req,res)
-    // {
-    //      var since_id = req.body.query.since_id;
-
-    //     console.log(since_id)
-    //     var searchquery = req.body.query.hashtag;
-    //     var encsearchquery = encodeURIComponent(searchquery);
-    //     var bearerheader = 'Bearer ' + config.bearertoken;
-
-    //         var max_id = req.body.query.max_id
-    //         request.get('https://api.twitter.com/1.1/search/tweets.json?q=%EB%B8%94%EB%9E%99%EB%B2%A0%EB%A6%AC&count=5&include_entities=1&result_type=recent&max_id='+since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
-    //             if(error)
-    //             console.log(error);
-    //             else {
-    //                 //  console.log(JSON.parse(body.body))
-    //                 console.log(JSON.parse(body.body).search_metadata.max_id)
-    //                 console.log(JSON.parse(body.body))
-    //                 res.json({success: true, data:JSON.parse(body.body),searchquery});
-                    
-    //             }
-    //         })
-    // },
     user: function(req, res){
         var searchquery = req.body.screenname;
         var encsearchquery = encodeURIComponent(searchquery);

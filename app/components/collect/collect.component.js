@@ -14,7 +14,6 @@ var forms_1 = require('@angular/forms');
 var CollectComponent = (function () {
     function CollectComponent(http, fb) {
         this.http = http;
-        //Deep copy 
         this.SumArrayData = new Array(new Array(0));
         this.ngcount = 0;
         this.since_id = "0";
@@ -90,22 +89,23 @@ var CollectComponent = (function () {
         };
         // Hashtag search&insert count maximum 500 2016/10/30
         // 11/02 날짜 저장값 때문에 임시블록
-        // $.ajax({
-        //         type: 'POST',
-        //             data: {
-        //                       "hashtag" : hashtag,
-        //                       "email" :  email,
-        //                       "frcal" : frcal,
-        //                       "tocal" : tocal,
-        //                       "twitter" : twitter,
-        //                      "name"    : name
-        //                 },
-        //         contentType: 'application/X-www-form-urlencoded',
-        //         url: 'http://localhost:4100/dbUserinsert'
-        //     });
+        $.ajax({
+            type: 'POST',
+            data: {
+                "hashtag": hashtag,
+                "email": email,
+                "frcal": frcal,
+                "tocal": tocal,
+                "twitter": twitter,
+                "name": name
+            },
+            contentType: 'application/X-www-form-urlencoded',
+            url: 'http://localhost:4100/dbUserinsert'
+        });
         this.searchajax(hashtag, addinfo);
         console.log("서치 완료");
         this.changeState('appState', 'default');
+        this.VailidateForm.reset();
     };
     //500개 기준잡음 성능 좋게방법이.... 11/02 
     CollectComponent.prototype.searchajax = function (data, addinfo) {
@@ -126,51 +126,93 @@ var CollectComponent = (function () {
     };
     CollectComponent.prototype.searchajax2 = function (res) {
         // 2
-        console.log(res.data);
-        $.ajax({
-            url: 'http://localhost:4100/collectSearch',
-            type: 'POST',
-            async: false,
-            data: {
-                query: {
-                    "hashtag": res.searchquery,
-                    "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                    "addinfo": res.addinfo
-                }
-            },
-            success: function (res) {
-                if (res.data.length != 200) {
-                    console.log('200개 미만');
-                }
-                else {
-                    //3
-                    console.log(res.data);
-                    $.ajax({
-                        url: 'http://localhost:4100/collectSearch',
-                        type: 'POST',
-                        async: false,
-                        data: {
-                            query: {
-                                "hashtag": res.searchquery,
-                                "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                                "addinfo": res.addinfo
-                            }
-                        },
-                        success: function (res) {
-                            console.log(res.data);
+        if (res.data.length < 100) {
+            console.log('100개 미만');
+            for (var i = 0; i < res.data.length; i++) {
+                $.ajax({
+                    type: 'POST',
+                    data: {
+                        "hashtag": res.searchquery,
+                        "name": res.addinfo.name,
+                        "email": res.addinfo.email,
+                        "frcal": res.addinfo.frcal,
+                        "tocal": res.addinfo.tocal,
+                        "twitter": res.addinfo.twitter,
+                        "SearchResult": res.data[i]
+                    },
+                    contentType: 'application/X-www-form-urlencoded',
+                    url: 'http://localhost:4100/dbinsert'
+                });
+            }
+        }
+        else if (res.data.statuses != undefined) {
+            console.log(res.data);
+            $.ajax({
+                url: 'http://localhost:4100/collectSearch',
+                type: 'POST',
+                async: false,
+                data: {
+                    query: {
+                        "hashtag": res.searchquery,
+                        "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                        "addinfo": res.addinfo
+                    }
+                },
+                success: function (res) {
+                    if (res.data.length != 200 && res.data.statuses == undefined) {
+                        console.log('200개 미만');
+                        for (var i = 0; i < res.data.length; i++) {
                             $.ajax({
-                                url: 'http://localhost:4100/collectSearch',
                                 type: 'POST',
-                                async: false,
                                 data: {
-                                    query: {
-                                        "hashtag": res.searchquery,
-                                        "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                                        "addinfo": res.addinfo
-                                    }
+                                    "hashtag": res.searchquery,
+                                    "name": res.addinfo.name,
+                                    "email": res.addinfo.email,
+                                    "frcal": res.addinfo.frcal,
+                                    "tocal": res.addinfo.tocal,
+                                    "twitter": res.addinfo.twitter,
+                                    "SearchResult": res.data[i]
                                 },
-                                success: function (res) {
-                                    //5
+                                contentType: 'application/X-www-form-urlencoded',
+                                url: 'http://localhost:4100/dbinsert'
+                            });
+                        }
+                    }
+                    else if (res.data.statuses != undefined) {
+                        //3
+                        console.log(res.data);
+                        $.ajax({
+                            url: 'http://localhost:4100/collectSearch',
+                            type: 'POST',
+                            async: false,
+                            data: {
+                                query: {
+                                    "hashtag": res.searchquery,
+                                    "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                                    "addinfo": res.addinfo
+                                }
+                            },
+                            success: function (res) {
+                                if (res.data.length != 300 && res.data.statuses == undefined) {
+                                    console.log('300개 미만');
+                                    for (var i = 0; i < res.data.length; i++) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            data: {
+                                                "hashtag": res.searchquery,
+                                                "name": res.addinfo.name,
+                                                "email": res.addinfo.email,
+                                                "frcal": res.addinfo.frcal,
+                                                "tocal": res.addinfo.tocal,
+                                                "twitter": res.addinfo.twitter,
+                                                "SearchResult": res.data[i]
+                                            },
+                                            contentType: 'application/X-www-form-urlencoded',
+                                            url: 'http://localhost:4100/dbinsert'
+                                        });
+                                    }
+                                }
+                                else if (res.data.statuses != undefined) {
                                     console.log(res.data);
                                     $.ajax({
                                         url: 'http://localhost:4100/collectSearch',
@@ -184,33 +226,68 @@ var CollectComponent = (function () {
                                             }
                                         },
                                         success: function (res) {
-                                            // 11/02 날짜 저장값 때문에 임시블록
-                                            //  for(var i = 0 ; i < res.data.length ; i++)
-                                            //  {
-                                            //         $.ajax({
-                                            //         type: 'POST',
-                                            //             data: {
-                                            //                         "hashtag" : res.searchquery,
-                                            //                         "name"   : res.addinfo.name,
-                                            //                         "email" :  res.addinfo.email,
-                                            //                         "frcal" : res.addinfo.frcal,
-                                            //                         "tocal" : res.addinfo.tocal,
-                                            //                         "twitter" : res.addinfo.twitter,
-                                            //                         "SearchResult" : res.data[i]
-                                            //                 },
-                                            //         contentType: 'application/X-www-form-urlencoded',
-                                            //         url: 'http://localhost:4100/dbinsert'
-                                            //     });
-                                            //  }
+                                            //5
+                                            if (res.data.length != 400 && res.data.statuses == undefined) {
+                                                console.log('400개 미만');
+                                                for (var i = 0; i < res.data.statuses.length; i++) {
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        data: {
+                                                            "hashtag": res.searchquery,
+                                                            "name": res.addinfo.name,
+                                                            "email": res.addinfo.email,
+                                                            "frcal": res.addinfo.frcal,
+                                                            "tocal": res.addinfo.tocal,
+                                                            "twitter": res.addinfo.twitter,
+                                                            "SearchResult": res.data[i]
+                                                        },
+                                                        contentType: 'application/X-www-form-urlencoded',
+                                                        url: 'http://localhost:4100/dbinsert'
+                                                    });
+                                                }
+                                            }
+                                            else if (res.data.statuses != undefined) {
+                                                console.log(res.data);
+                                                $.ajax({
+                                                    url: 'http://localhost:4100/collectSearch',
+                                                    type: 'POST',
+                                                    async: false,
+                                                    data: {
+                                                        query: {
+                                                            "hashtag": res.searchquery,
+                                                            "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                                                            "addinfo": res.addinfo
+                                                        }
+                                                    },
+                                                    success: function (res) {
+                                                        for (var i = 0; i < res.data.statuses.length; i++) {
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                data: {
+                                                                    "hashtag": res.searchquery,
+                                                                    "name": res.addinfo.name,
+                                                                    "email": res.addinfo.email,
+                                                                    "frcal": res.addinfo.frcal,
+                                                                    "tocal": res.addinfo.tocal,
+                                                                    "twitter": res.addinfo.twitter,
+                                                                    "SearchResult": res.data[i]
+                                                                },
+                                                                contentType: 'application/X-www-form-urlencoded',
+                                                                url: 'http://localhost:4100/dbinsert'
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     });
                                 }
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     };
     CollectComponent.prototype.inputcal = function () {
         $('#frcal').datepicker({
@@ -250,7 +327,7 @@ var CollectComponent = (function () {
             moduleId: module.id,
             selector: 'collect',
             templateUrl: 'collect.component.html',
-            styleUrls: ['collect.component.css'],
+            styleUrls: ['collect.component.css']
         }),
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, forms_1.FormBuilder])
