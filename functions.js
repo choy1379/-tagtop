@@ -56,45 +56,59 @@ functions = {
         if(since_id == 0)
         {
             request.get('https://api.twitter.com/1.1/search/tweets.json?q=' + encsearchquery +
-            '&result_type=recent&count=2&include_entities=true&since_id=' + since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
+            '&result_type=recent&count=100&include_entities=true&since_id=' + since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
                 if(error)
                 console.log();
                 else {
-                        // var system_date = Date.parse(res.created_at.replace(/( \+)/, ' UTC$1'))
-                        // var user_date = + new Date();
-                        // var diff = Math.floor((user_date - system_date) / 1000);
-                    for(var i= 0 ; i<2 ; i++)
-                    {   
-                      
-                        console.log(JSON.parse(body.body).statuses[i].created_at)
-                    }
-                    
+    
                     config.sumarray = JSON.parse(body.body).statuses
-                 
+
+                    for(var i= 0 ; i< config.sumarray.length ; i++)
+                    {   
+                       var dt = new Date(Date.parse(config.sumarray[i].created_at.replace(/( \+)/, ' UTC$1')))
+                       var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                       config.sumarray[i].created_at = ConvertDt
+
+                    }
+
                     res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});                
                 }
             })
         }
         else
         {
-        request.get('https://api.twitter.com/1.1/search/tweets.json?q=%EB%B8%94%EB%9E%99%EB%B2%A0%EB%A6%AC&count=100&include_entities=1&result_type=recent&max_id='+since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
+        request.get('https://api.twitter.com/1.1/search/tweets.json?q='+encsearchquery+'&count=100&include_entities=1&result_type=recent&max_id='+since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
                 if(error)
                 console.log(error);
                 else {
-                         
-                        for(var i = 0 ; i < JSON.parse(body.body).statuses.length; i++)
+
+                         for(var i = 0 ; i < JSON.parse(body.body).statuses.length; i++)
                         {
                             config.sumarray[config.sumarray.length] = JSON.parse(body.body).statuses[i]
-                        
+                            var dt = new Date(Date.parse(config.sumarray[config.sumarray.length-1].created_at.replace(/( \+)/, ' UTC$1')))
+                            var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                            
+                            config.sumarray[config.sumarray.length-1].created_at = ConvertDt
+            
                         }
+                        console.log(config.sumarray[100])
+                        console.log(config.sumarray[101])
                         console.log(config.sumarray.length)
+
                         if(config.sumarray.length ==500)
                         {  
                             res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});
                         }
                         else
                         {
-                            res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});
+                            if(config.sumarray.length != 100)
+                            {
+                                res.json({success: true, data:config.sumarray , searchquery,addinfo:config.addinfo});
+                            }
+                            else
+                            {
+                                res.json({success: true, data:JSON.parse(body.body),searchquery,addinfo:config.addinfo});
+                            }
                         }
                     }
 

@@ -65,29 +65,7 @@ onRowClicked(event: any) {
                         "name" : this.searchdata.name,
                         "hashtag" : this.searchdata.hashtag
        }
-
-       // ajax success 는 왜 클라이언트단 전역변수를 못가져오는걸까....
-      //     $.ajax({
-      //     url: 'http://localhost:4100/searchid',
-      //     type: 'POST',
-      //     data: {
-          
-      //             "name" : this.searchdata.name,
-      //             "hashtag" : this.searchdata.hashtag,
-                  
-         
-      //     },
-      //     success : function (res:any) 
-      //     {
-      //       this.resultData = res; 
-
-        
-      //    this.gridOptions2.api.setRowData(this.resultData)     
-      //    var resultsearch_show = document.getElementById("resultsearch").style.display='inline';  
-      //     }   
-      // })
-
-
+       
         var headers = new Headers(); 
         headers.append('Content-Type', 'application/json')
         this.http.post('http://localhost:4100/searchid',query,{headers: headers}).subscribe((res) => {
@@ -208,6 +186,30 @@ ngOnInit(){
         },
         success : function(res:any)
         { 
+        if(res.data.length != 200)
+        {
+            console.log('200개 미만')
+            // 11/02 날짜 저장값 때문에 임시블록
+            //  for(var i = 0 ; i < res.data.length ; i++)
+            //  {
+            //         $.ajax({
+            //         type: 'POST',
+            //             data: {
+            //                         "hashtag" : res.searchquery,
+            //                         "name"   : res.addinfo.name,
+            //                         "email" :  res.addinfo.email,
+            //                         "frcal" : res.addinfo.frcal,
+            //                         "tocal" : res.addinfo.tocal,
+            //                         "twitter" : res.addinfo.twitter,
+            //                         "SearchResult" : res.data[i]
+            //                 },
+            //         contentType: 'application/X-www-form-urlencoded',
+            //         url: 'http://localhost:4100/dbinsert'
+            //     });
+            //  }
+        }
+        else
+        {
           //3
           console.log(res.data)
             $.ajax({
@@ -278,7 +280,7 @@ ngOnInit(){
                   
                 }
             })
-          
+        } 
         }
     })
   }

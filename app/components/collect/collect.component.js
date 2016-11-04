@@ -44,21 +44,6 @@ var CollectComponent = (function () {
             "name": this.searchdata.name,
             "hashtag": this.searchdata.hashtag
         };
-        // ajax success 는 왜 클라이언트단 전역변수를 못가져오는걸까....
-        //     $.ajax({
-        //     url: 'http://localhost:4100/searchid',
-        //     type: 'POST',
-        //     data: {
-        //             "name" : this.searchdata.name,
-        //             "hashtag" : this.searchdata.hashtag,
-        //     },
-        //     success : function (res:any) 
-        //     {
-        //       this.resultData = res; 
-        //    this.gridOptions2.api.setRowData(this.resultData)     
-        //    var resultsearch_show = document.getElementById("resultsearch").style.display='inline';  
-        //     }   
-        // })
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
         this.http.post('http://localhost:4100/searchid', query, { headers: headers }).subscribe(function (res) {
@@ -154,71 +139,76 @@ var CollectComponent = (function () {
                 }
             },
             success: function (res) {
-                //3
-                console.log(res.data);
-                $.ajax({
-                    url: 'http://localhost:4100/collectSearch',
-                    type: 'POST',
-                    async: false,
-                    data: {
-                        query: {
-                            "hashtag": res.searchquery,
-                            "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                            "addinfo": res.addinfo
-                        }
-                    },
-                    success: function (res) {
-                        console.log(res.data);
-                        $.ajax({
-                            url: 'http://localhost:4100/collectSearch',
-                            type: 'POST',
-                            async: false,
-                            data: {
-                                query: {
-                                    "hashtag": res.searchquery,
-                                    "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                                    "addinfo": res.addinfo
-                                }
-                            },
-                            success: function (res) {
-                                //5
-                                console.log(res.data);
-                                $.ajax({
-                                    url: 'http://localhost:4100/collectSearch',
-                                    type: 'POST',
-                                    async: false,
-                                    data: {
-                                        query: {
-                                            "hashtag": res.searchquery,
-                                            "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
-                                            "addinfo": res.addinfo
-                                        }
-                                    },
-                                    success: function (res) {
-                                        // 11/02 날짜 저장값 때문에 임시블록
-                                        //  for(var i = 0 ; i < res.data.length ; i++)
-                                        //  {
-                                        //         $.ajax({
-                                        //         type: 'POST',
-                                        //             data: {
-                                        //                         "hashtag" : res.searchquery,
-                                        //                         "name"   : res.addinfo.name,
-                                        //                         "email" :  res.addinfo.email,
-                                        //                         "frcal" : res.addinfo.frcal,
-                                        //                         "tocal" : res.addinfo.tocal,
-                                        //                         "twitter" : res.addinfo.twitter,
-                                        //                         "SearchResult" : res.data[i]
-                                        //                 },
-                                        //         contentType: 'application/X-www-form-urlencoded',
-                                        //         url: 'http://localhost:4100/dbinsert'
-                                        //     });
-                                        //  }
-                                    }
-                                });
+                if (res.data.length != 200) {
+                    console.log('200개 미만');
+                }
+                else {
+                    //3
+                    console.log(res.data);
+                    $.ajax({
+                        url: 'http://localhost:4100/collectSearch',
+                        type: 'POST',
+                        async: false,
+                        data: {
+                            query: {
+                                "hashtag": res.searchquery,
+                                "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                                "addinfo": res.addinfo
                             }
-                        });
-                    }
-                });
+                        },
+                        success: function (res) {
+                            console.log(res.data);
+                            $.ajax({
+                                url: 'http://localhost:4100/collectSearch',
+                                type: 'POST',
+                                async: false,
+                                data: {
+                                    query: {
+                                        "hashtag": res.searchquery,
+                                        "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                                        "addinfo": res.addinfo
+                                    }
+                                },
+                                success: function (res) {
+                                    //5
+                                    console.log(res.data);
+                                    $.ajax({
+                                        url: 'http://localhost:4100/collectSearch',
+                                        type: 'POST',
+                                        async: false,
+                                        data: {
+                                            query: {
+                                                "hashtag": res.searchquery,
+                                                "since_id": JSON.stringify(res.data.search_metadata.next_results).slice(9, 27),
+                                                "addinfo": res.addinfo
+                                            }
+                                        },
+                                        success: function (res) {
+                                            // 11/02 날짜 저장값 때문에 임시블록
+                                            //  for(var i = 0 ; i < res.data.length ; i++)
+                                            //  {
+                                            //         $.ajax({
+                                            //         type: 'POST',
+                                            //             data: {
+                                            //                         "hashtag" : res.searchquery,
+                                            //                         "name"   : res.addinfo.name,
+                                            //                         "email" :  res.addinfo.email,
+                                            //                         "frcal" : res.addinfo.frcal,
+                                            //                         "tocal" : res.addinfo.tocal,
+                                            //                         "twitter" : res.addinfo.twitter,
+                                            //                         "SearchResult" : res.data[i]
+                                            //                 },
+                                            //         contentType: 'application/X-www-form-urlencoded',
+                                            //         url: 'http://localhost:4100/dbinsert'
+                                            //     });
+                                            //  }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     };
