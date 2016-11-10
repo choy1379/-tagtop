@@ -1,5 +1,6 @@
 
 var express = require('express');
+
 //search for tweeter
 var bodyParser = require('body-parser');
 var cors = require('cors');
@@ -7,21 +8,87 @@ var functions = require('./functions');
 var dbsearch = require('./dbsearch');
 var app = express();
 var cluster = require('cluster');
+var Scheduler = require('nschedule');
+var mongojs = require('mongojs');
+var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+var config = require('./config');
+var async = require('async');
 
-// Code to run if we're in the master process
 if (cluster.isMaster) {
 
-    // Count the machine's CPUs
+
+  
     var cpuCount = require('os').cpus().length;
 
-    // Create a worker for each CPU
+   
     for (var i = 0; i < cpuCount; i += 1) {
         cluster.fork();
     }
 
-   
+        var scheduler = new Scheduler(1);
+        
+        
+        scheduler.add(30000, function(done,res){
+            console.log('진입')
+            dbsearch.scheduleHash();   
+            
+            functions.scheduleauthorize();
+            setTimeout(function() {
+                // 500개 기준 잡자 11/10
+                for (var i=0; i<1; i++)
+                {
+                        async.waterfall([
+                                            function(callback){
+                                            console.log("since_id,next_result 1")
+                                            functions.Schedulesearch(i);//0번째 since_id 가져오기 
+                                            setTimeout(function() {
+                                                callback(null)
+                                            }, 5000);
+                                            
+                                             
+                                            },
+                                            function(callback){
+                                                 console.log("next_result 2")
+                                                functions.ScheduleFeatch();
+                                                  setTimeout(function() {
+                                                callback(null)
+                                            }, 5000);
+                                            },
+                                            function(callback){
+                                                 console.log("next_result 3")
+                                                 functions.ScheduleFeatch();
+                                                setTimeout(function() {
+                                                callback(null)
+                                            }, 5000);
+                                            }
+                                            ,
+                                            function(callback){
+                                                 console.log("next_result 4")
+                                                 functions.ScheduleFeatch();
+                                                setTimeout(function() {
+                                                callback(null)
+                                            }, 5000);
+                                            }
+                                            ,
+                                            function(callback){
+                                                 console.log("next_result 5")
+                                                 functions.ScheduleFeatch();
+                                                setTimeout(function() {
+                                                callback(null)
+                                            }, 5000);
+                                            }
+                                           
+                                            ],
+                                        );
 
-// Code to run if we're in a worker process
+                }
+                console.log('종료')
+            }, 3000); 
+
+            done();
+        });
+
+
 }
 else
 {
@@ -33,10 +100,12 @@ else
             limit: 1024 * 1024 * 10
         }));
         app.use(cors());
+
         app.post('/authorize', functions.authorize);
         app.post('/search', functions.search);
         app.post('/user', functions.user);
         app.post('/collectSearch', functions.collectSearch);
+        app.post('/collectSearchHttp', functions.Schedulesearch);
         app.post('/dbinsert',dbsearch.hashtagins);  //hashtag result insert
         app.post('/dbUserinsert',dbsearch.Userinsert);  //hashtag result insert
         app.post('/dbsearch',dbsearch.getAllCollect);
@@ -45,5 +114,6 @@ else
         app.listen(process.env.PORT || 4100);
         console.log("Server up on port 4100");
         console.log('Worker %d running!', cluster.worker.id);
+
 }
 

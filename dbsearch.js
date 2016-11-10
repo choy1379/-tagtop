@@ -2,12 +2,14 @@ var request = require('request');
 var config = require('./config');
 var express = require('express');
 var router = express.Router();
+var searchfunctions = require('./functions')
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
 
+
 functions = {
 
-    //임시 모든 정보 다불러오기 수정해야됨 10/27
+    //스케쥴링위해잠시 테스트 11/05
     getAllCollect: (req, res) => {
     db.collect.find({}, (err, collect) => {
       if (err) {
@@ -63,7 +65,26 @@ functions = {
                 }
             });
         
-    }
+    },  
+    scheduleHash: () => {
+    db.collect.find({}, (err, collect) => {
+            if (err) {
+
+              return res.send(err);
+            }
+            
+            
+              for(var i =0; i<collect.length; i++)
+              {
+                  config.schedule.hashtag[i] = collect[i].hashtag
+                  config.schedule.name[i] = collect[i].name
+              }
+            console.log('진입완료')
+            
+   
+    });
+  },
+
 }
 
 

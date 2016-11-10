@@ -3,6 +3,7 @@ import { Http, Headers} from '@angular/http';
 import {Collect}  from '../collect';
 import {GridOptions} from 'ag-grid/main';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {Observable} from 'rxjs/Rx'
 declare  var $:any;
 
 
@@ -54,7 +55,7 @@ export class CollectComponent implements OnInit,OnDestroy {
     collect : Collect[];
     since_id = "0" 
     max_id = "0"
-    tempdata :any
+    httpResultData :any
   
 
 onRowClicked(event: any) { 
@@ -130,26 +131,30 @@ ngOnInit(){
 
       }     
   // Hashtag search&insert count maximum 500 2016/10/30
-  // 11/02 날짜 저장값 때문에 임시블록
-    $.ajax({
-            type: 'POST',
-                data: {
-                          "hashtag" : hashtag,
-                          "email" :  email,
-                          "frcal" : frcal,
-                          "tocal" : tocal,
-                          "twitter" : twitter,
-                         "name"    : name
+    // $.ajax({
+    //         type: 'POST',
+    //             data: {
+    //                       "hashtag" : hashtag,
+    //                       "email" :  email,
+    //                       "frcal" : frcal,
+    //                       "tocal" : tocal,
+    //                       "twitter" : twitter,
+    //                      "name"    : name
                         
-                    },
-            contentType: 'application/X-www-form-urlencoded',
-            url: 'http://localhost:4100/dbUserinsert'
-        });
-   this.searchajax(hashtag,addinfo);
-   console.log("서치 완료")
+    //                 },
+    //         contentType: 'application/X-www-form-urlencoded',
+    //         url: 'http://localhost:4100/dbUserinsert'
+    //     });
+    
+
+//    http.post 변경전까지 임시주석 11/05
+  this.searchajax(hashtag,addinfo);
+//    console.log("서치 완료")
    this.changeState('appState','default')
    this.VailidateForm.reset()
-  }
+    }
+
+
   //500개 기준잡음 성능 좋게방법이.... 11/02 
   searchajax(data:any,addinfo:any)
   {
@@ -195,6 +200,7 @@ ngOnInit(){
         }
       else if(res.data.statuses != undefined)
       {
+          
         console.log(res.data)
         $.ajax({
             url: 'http://localhost:4100/collectSearch',

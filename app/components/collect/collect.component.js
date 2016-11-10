@@ -88,22 +88,22 @@ var CollectComponent = (function () {
             twitter: twitter
         };
         // Hashtag search&insert count maximum 500 2016/10/30
-        // 11/02 날짜 저장값 때문에 임시블록
-        $.ajax({
-            type: 'POST',
-            data: {
-                "hashtag": hashtag,
-                "email": email,
-                "frcal": frcal,
-                "tocal": tocal,
-                "twitter": twitter,
-                "name": name
-            },
-            contentType: 'application/X-www-form-urlencoded',
-            url: 'http://localhost:4100/dbUserinsert'
-        });
+        // $.ajax({
+        //         type: 'POST',
+        //             data: {
+        //                       "hashtag" : hashtag,
+        //                       "email" :  email,
+        //                       "frcal" : frcal,
+        //                       "tocal" : tocal,
+        //                       "twitter" : twitter,
+        //                      "name"    : name
+        //                 },
+        //         contentType: 'application/X-www-form-urlencoded',
+        //         url: 'http://localhost:4100/dbUserinsert'
+        //     });
+        //    http.post 변경전까지 임시주석 11/05
         this.searchajax(hashtag, addinfo);
-        console.log("서치 완료");
+        //    console.log("서치 완료")
         this.changeState('appState', 'default');
         this.VailidateForm.reset();
     };

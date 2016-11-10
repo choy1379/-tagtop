@@ -5,6 +5,14 @@ var appsettings = {
      since_id : '',
     searchquery : '',
     sumarray :  new Object(),
-    addinfo : new Array()
+    addinfo : new Array(),
+     schedule : {
+                    hashtag : new Array(),
+                    name : new Array(),
+                    since_id : new Array()
+        },
+    schedulearray : new Object()
+
 };
+
 module.exports = appsettings;
