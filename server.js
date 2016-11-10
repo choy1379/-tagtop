@@ -86,6 +86,7 @@ if (cluster.isMaster) {
                                             function(scheduleId,callback){
                                                  console.log("next_result 5")
                                                  console.log(scheduleId)
+                                                 //next_result 없을때 값처리해야됨
                                                  functions.ScheduleFeatch(scheduleId);
                                                 setTimeout(function() {
                                                 callback(null,config.schedule.since_id)
