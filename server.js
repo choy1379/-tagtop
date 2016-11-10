@@ -28,60 +28,73 @@ if (cluster.isMaster) {
         var scheduler = new Scheduler(1);
         
         
-        scheduler.add(30000, function(done,res){
+        scheduler.add(40000, function(done,res){
             console.log('진입')
             dbsearch.scheduleHash();   
             
             functions.scheduleauthorize();
             setTimeout(function() {
-                // 500개 기준 잡자 11/10
-                for (var i=0; i<1; i++)
-                {
+            
                         async.waterfall([
                                             function(callback){
-                                            console.log("since_id,next_result 1")
-                                            functions.Schedulesearch(i);//0번째 since_id 가져오기 
+                                            console.log("since_id")
+                                            for(var i = 0 ; i< 2; i++) //수정해야됨
+                                            {
+                                                functions.Schedulesearch(i);//0번째 since_id 가져오기                                            
+                                            }
                                             setTimeout(function() {
-                                                callback(null)
-                                            }, 5000);
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
                                             
                                              
                                             },
-                                            function(callback){
-                                                 console.log("next_result 2")
-                                                functions.ScheduleFeatch();
+                                            function(scheduleId,callback){                                                                                                                                                                                                               
+                                                 console.log("next_result 1")
+                                                 console.log(scheduleId)
+                                                functions.ScheduleFeatch(scheduleId);
                                                   setTimeout(function() {
-                                                callback(null)
-                                            }, 5000);
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
                                             },
-                                            function(callback){
+                                            function(scheduleId,callback){
+                                                 console.log("next_result 2")
+                                                 console.log(scheduleId)
+                                                 functions.ScheduleFeatch(scheduleId);
+                                                setTimeout(function() {
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
+                                            }
+                                            ,
+                                            function(scheduleId,callback){
                                                  console.log("next_result 3")
-                                                 functions.ScheduleFeatch();
+                                                 console.log(scheduleId)
+                                                 functions.ScheduleFeatch(scheduleId);
                                                 setTimeout(function() {
-                                                callback(null)
-                                            }, 5000);
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
                                             }
                                             ,
-                                            function(callback){
+                                            function(scheduleId,callback){
                                                  console.log("next_result 4")
-                                                 functions.ScheduleFeatch();
+                                                 console.log(scheduleId)
+                                                 functions.ScheduleFeatch(scheduleId);
                                                 setTimeout(function() {
-                                                callback(null)
-                                            }, 5000);
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
                                             }
-                                            ,
-                                            function(callback){
+                                             ,
+                                            function(scheduleId,callback){
                                                  console.log("next_result 5")
-                                                 functions.ScheduleFeatch();
+                                                 console.log(scheduleId)
+                                                 functions.ScheduleFeatch(scheduleId);
                                                 setTimeout(function() {
-                                                callback(null)
-                                            }, 5000);
+                                                callback(null,config.schedule.since_id)
+                                            }, 3000);
                                             }
                                            
-                                            ],
+                                            ]
                                         );
 
-                }
                 console.log('종료')
             }, 3000); 
 

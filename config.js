@@ -11,7 +11,8 @@ var appsettings = {
                     name : new Array(),
                     since_id : new Array()
         },
-    schedulearray : new Object()
+    schedulearray : new Object(),
+    tempArray : new Array()
 
 };
 

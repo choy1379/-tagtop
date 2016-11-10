@@ -123,6 +123,8 @@ functions = {
     },
     Schedulesearch : function(count)
     {
+        //나중값이 맨먼저 들어온다 
+        console.log(count)
         if(config.schedule.since_id.length == 0)
         {
              var since_id = 0;
@@ -138,21 +140,31 @@ functions = {
             '&result_type=recent&count=100&include_entities=true&since_id=' + since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
                 if(error)
                 console.log();
-                else {
-                          config.sumarray = JSON.parse(body.body).statuses
-
-                            for(var i= 0 ; i< config.sumarray.length ; i++)
-                            {   
-                                var dt = new Date(Date.parse(config.sumarray[i].created_at.replace(/( \+)/, ' UTC$1')))
-                                var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
-                                config.sumarray[i].created_at = ConvertDt
-                            }
-                        // console.log(JSON.parse(body.body).statuses.length);
-                        config.schedule.since_id = JSON.parse(body.body).search_metadata.next_results
-                        console.log(config.schedule.since_id)
-                         console.log(config.sumarray.length)
-                        // functions.ScheduleFeatch()
-                       
+                else {      
+                      switch (count) {
+                        case 4    : config.schedule.since_id[0] = JSON.parse(body.body).search_metadata.next_results 
+                                    console.log('4번')
+                                    console.log(config.schedule.since_id[0])
+                                    break;
+                        case 3   : config.schedule.since_id[1] = JSON.parse(body.body).search_metadata.next_results
+                                   console.log('3번')
+                                   console.log(config.schedule.since_id[1])
+                                    break;
+                        case 2  : config.schedule.since_id[2] = JSON.parse(body.body).search_metadata.next_results
+                                    console.log('2번')
+                                  console.log(config.schedule.since_id[2])
+                                    break;
+                        case 1   : config.schedule.since_id[3] = JSON.parse(body.body).search_metadata.next_results
+                                    console.log('1번')
+                                   console.log(config.schedule.since_id[3])
+                                    break;
+                        case 0  : config.schedule.since_id[4] = JSON.parse(body.body).search_metadata.next_results
+                                     console.log('0번')
+                                  console.log(config.schedule.since_id[4])
+                                    break
+                        default    : console.log('case문 종료');
+                                    break;
+                        }
                 }
             })
        
@@ -188,37 +200,101 @@ functions = {
             
         })
     },
-    ScheduleFeatch : function()
+    ScheduleFeatch : function(scheduleId)
     {  
-    
-
+        //순서는 아이폰 0 , 블랙베리  1
+        //fetch 에서는  블랙베리가 먼저들어왔으므로 0 번주소 차지
+        //            블랙베리 1 -> since_id[0]
+        //            아이폰 0 -> since_id[1]
         console.log('fetch 진입완료')
+        var count = scheduleId.length-4 // 5 - 2 수정해야됨
+        
+        for(var k = 3 ; k < scheduleId.length; k++) //2개 5 - 2  수정해야됨
+        {
+
          var bearerheader = 'Bearer ' + config.bearertoken;
-         request.get('https://api.twitter.com/1.1/search/tweets.json'+config.schedule.since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
+       
+                 request.get('https://api.twitter.com/1.1/search/tweets.json'+scheduleId[k], {headers: {Authorization: bearerheader}}, function(error, body, response) {
                 if(error)
                 console.log();
                 else {
-                        // config.sumarray = JSON.parse(body.body).statuses
-                       
-                        for(var i = 0 ; i < JSON.parse(body.body).statuses.length; i++)
-                            {
-                                config.sumarray[config.sumarray.length] = JSON.parse(body.body).statuses[i]
-                                var dt = new Date(Date.parse(config.sumarray[config.sumarray.length-1].created_at.replace(/( \+)/, ' UTC$1')))
-                                var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
-                                
-                                config.sumarray[config.sumarray.length-1].created_at = ConvertDt
-                                
+                    
+                            for(var i = 0 ; i < JSON.parse(body.body).statuses.length; i++)
+                                {
+                                    config.sumarray[config.sumarray.length] = JSON.parse(body.body).statuses[i]
+                                    var dt = new Date(Date.parse(config.sumarray[config.sumarray.length].created_at.replace(/( \+)/, ' UTC$1')))                              
+                                    // var dt = new Date(Date.parse(config.sumarray[config.sumarray.length-1].created_at.replace(/( \+)/, ' UTC$1')))
+                                    var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                                    
+                                    config.sumarray[config.sumarray.length].created_at = ConvertDt
+                                    // config.sumarray[config.sumarray.length-1].created_at = ConvertDt
+                                    
+                                }
+
+                            // console.log(count) //2
+                            for(var i = 0 ; i<scheduleId.length; i++)
+                            {   
+                               
+                                if(scheduleId[i] == undefined)
+                                {
+
+                                }
+                                else
+                                {
+                                    if(JSON.stringify(scheduleId[i]).slice(9,27)==JSON.parse(body.body).search_metadata.max_id_str)
+                                    {
+                                        switch (i) {
+                                                    case 0    : config.schedule.since_id[0] = JSON.parse(body.body).search_metadata.next_results 
+                                                                console.log('4번')
+                                                                console.log(JSON.parse(body.body).search_metadata)
+                                                                // console.log(config.schedule.since_id[0])
+                                                                count--
+                                                                break;
+                                                    case 1   : config.schedule.since_id[1] = JSON.parse(body.body).search_metadata.next_results
+                                                            console.log('3번')
+                                                            console.log(JSON.parse(body.body).search_metadata)
+                                                            //    console.log(config.schedule.since_id[1])
+                                                            count--
+                                                                break;
+                                                    case 2  : config.schedule.since_id[2] = JSON.parse(body.body).search_metadata.next_results
+                                                            console.log('2번')
+                                                            console.log(JSON.parse(body.body).search_metadata)
+                                                            //   console.log(config.schedule.since_id[2])
+                                                            
+                                                            count--
+                                                                break;
+                                                    case 3   : config.schedule.since_id[3] = JSON.parse(body.body).search_metadata.next_results
+                                                            console.log('1번')
+                                                            console.log(JSON.parse(body.body).statuses[0].text)
+                                                                console.log(JSON.parse(body.body).search_metadata)
+                                                            
+                                                            count--
+                                                                break;
+                                                    case 4  : config.schedule.since_id[4] = JSON.parse(body.body).search_metadata.next_results
+                                                            console.log('0번')
+                                                            console.log(JSON.parse(body.body).statuses[0].text)
+                                                            console.log(JSON.parse(body.body).search_metadata)
+                                                            //   console.log(config.schedule.since_id[4])
+                                                        
+                                                            count--
+                                                                break
+                                                    default    : console.log('Fetch case문 종료');
+                                                                break;
+                                                    }
+                                    }
                             }
-                         console.log(config.sumarray.length)
-                        config.schedule.since_id = JSON.parse(body.body).search_metadata.next_results
-                     
-                        
+                        }
+                        //  console.log(JSON.parse(body.body).search_metadata.next_results)
+                        // config.schedule.since_id = JSON.parse(body.body).search_metadata.next_results
+                                        
                 }
             })
+  
+     
  
+        }
     
-    
-    },
+    }
 }
 
 
