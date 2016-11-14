@@ -28,75 +28,16 @@ if (cluster.isMaster) {
 
         var scheduler = new Scheduler(1);
         
-         scheduler.add(10000, function(done,res){
+         scheduler.add(8000, function(done,res){
             console.log('진입')  
-            var url = 'https://twitter.com/search?q=%23%EB%B8%94%EB%9E%99%EB%B2%A0%EB%A6%AC&src=typd';
-                request(url, function(error, response, body){
-                    if (error) {throw error};
-
-
-                   var $ = cheerio.load(body);
-           
-                
-                    // 11-12 트위터 이름 
-                    $('div.stream-item-header').children('a').children('span').next('span').each(function(i, element){
-                        var namefr = $(this).children('s').eq(0).text();
-                        var nameto = $(this).children('b').eq(0).text();
-                        var name = namefr+nameto;
-                        config.arrcrawTwitter.name[i] = name;
-                    })
-
-                    // 이미지 순서 수정 필 
-                    $('div.js-tweet-text-container').next('div').children('div').children('div').children('div').children('img').each(function(i, element){
-                        var src = $(this).attr('src')
-                        config.arrcrawTwitter.img[i] = src
-                        // console.log($(this).attr('src'))    //attribs 가져오는거
-                    })      
-                  
-                    // 11-12 트위터 내용
-                    $('div.js-tweet-text-container').children('p').each(function(i, element){
-                        var a = $(this).text();
-                        config.arrcrawTwitter.text[i]= a;
-                    })           
-               
-                    //끝나는 부분에 object 값 넣어주기
-                    for(var i = 0 ; i < config.arrcrawTwitter.text.length ;  i++)
-                    {
-                        var objcrawlTwitt = new Object()
-                        objcrawlTwitt.name = config.arrcrawTwitter.name[i]
-                        objcrawlTwitt.image = config.arrcrawTwitter.img[i] 
-                        objcrawlTwitt.text = config.arrcrawTwitter.text[i]
-                        config.sumTwitt.push(objcrawlTwitt)
-
-                    }
-                    // console.log(config.sumTwitt.length)
-                  
-                }  
-
-            );    
-
-
-
+            var url = 'https://twitter.com/search?f=tweets&vertical=default&q=%23%EC%95%84%EC%9D%B4%ED%8F%B0&src=typd';
+      
             var Spooky = require('spooky');
 
-            var ITUNES_URL = 'https://itunes.apple.com';
-
-            console.log();
-            console.log("*******************************************************");
-            console.log();
-            console.log("To find the ratings for an iTunes application, use the following:");
-            console.log("   node app.js <URL>")
-            console.log();
-            console.log("For example: ");
-            console.log("   node app.js 'https://itunes.apple.com/us/app/facebook/id284882215?mt=8&v0=' ");
-            console.log();
-            console.log("*******************************************************");
-            console.log("");
-
             var spooky = new Spooky({
-                    child: {
-                        transport: 'http'
-                    },
+                    // child: {
+                    //     transport: 'http'
+                    // },
                     casper: {
                         logLevel: 'debug',
                         verbose: true
@@ -107,44 +48,53 @@ if (cluster.isMaster) {
                         e.details = err;
                         throw e;
                     }
+                spooky.options.viewportSize = {width:1024,height:768}
 
-                    spooky.start(url);
+                spooky.start(url);
 
                 spooky.then(function(){
-                    // save a screenshot of the page, yeah it's Christmas soon!
-                    this.capture('itune'+new Date()+'.png');
+                    this.capture('twitter'+new Date()+'.jpg');
                 });
-
-                spooky.waitFor(function check() {
-                    return this.evaluate(function() {
-                    return document.querySelectorAll('.customer-ratings').length > 0;
-                    });
-                }, function then() {
-
-                    var result = this.evaluate(function(toto) {
-                        var ratingsElt = document.getElementsByClassName('customer-ratings')[0];
-                        //var currentVersionRating = ratingsElt.getElementsByClassName('rating')[0].getAttribute('aria-label').charAt(0);
-
-                        var allVersionRating = ratingsElt.getElementsByClassName('rating')[1].getAttribute('aria-label').charAt(0);
-                        var allVersionCount = ratingsElt.getElementsByClassName('rating-count')[1].textContent;
-
-                        var regexpOnlyNumbers = new RegExp("[0-9]+","g");
-                        var resultCount = allVersionCount.match(regexpOnlyNumbers)[0];
-                        var result = {};
-                        result.allVersionRating = allVersionRating;
-                        result.resultCount = resultCount;
-
-                                return result;
-                
+                spooky.then(function(){
+                    var latestComment = function(){
+                            // return document.querySelectorAll('#stream-items-id li').innerText; //첫번째값 가져오는듯..
+                            return document.querySelector('#stream-items-id li').innerText; //첫번째값 가져오는듯..
+                         };
+                  
+                    this.emit('logs',this.evaluate(latestComment))
                 });
-                this.emit('display', 'star rating: '+result.allVersionRating);
-                this.emit('display', 'star rating count: '+result.resultCount);
+       
+              
+                // spooky.waitFor(function check() {
+                //     return this.evaluate(function() {
+                //     return document.querySelectorAll('.customer-ratings').length > 0;
+                //     });
+                // }, function then() {
+
+                //     var result = this.evaluate(function(toto) {
+                //         var ratingsElt = document.getElementsByClassName('customer-ratings')[0];
+                //         //var currentVersionRating = ratingsElt.getElementsByClassName('rating')[0].getAttribute('aria-label').charAt(0);
+
+                //         var allVersionRating = ratingsElt.getElementsByClassName('rating')[1].getAttribute('aria-label').charAt(0);
+                //         var allVersionCount = ratingsElt.getElementsByClassName('rating-count')[1].textContent;
+
+                //         var regexpOnlyNumbers = new RegExp("[0-9]+","g");
+                //         var resultCount = allVersionCount.match(regexpOnlyNumbers)[0];
+                //         var result = {};
+                //         result.allVersionRating = allVersionRating;
+                //         result.resultCount = resultCount;
+
+                //                 return result;
+                
+                // });
+                // this.emit('display', 'star rating: '+result.allVersionRating);
+                // this.emit('display', 'star rating count: '+result.resultCount);
 
                 
                 
-                }, function timeout() { // step to execute if check has failed
-                    this.echo("Sorry, it took to much time to fetch the rating, try later or check if the url is correct.").exit();
-                });
+                // }, function timeout() { // step to execute if check has failed
+                //     this.echo("Sorry, it took to much time to fetch the rating, try later or check if the url is correct.").exit();
+                // });
 
                     spooky.run();
                 
@@ -170,25 +120,11 @@ if (cluster.isMaster) {
                 }
             });
 
-         
-            // var casperProcess = (process.platform === "win32" ? "casperjs.cmd" : "casperjs");
-            // var spawn = require("child_process").spawn
-            // var child = spawn(casperProcess, ["casper.js"])
+             spooky.on('logs', function (logs) {
+                                console.log(logs);
+                            });
 
-            // child.stdout.on("data", function (data) {
-            //     console.log(String(data));
-            //     //console.log("spawnSTDOUT:", JSON.stringify(data))
-            // });
-            // child.stderr.on("data", function (data) {
-            //     console.log("spawnSTDERR:", JSON.stringify(data))
-            // })
-
-            // child.on("exit", function (code) {
-            //     console.log("spawnEXIT:", code)
-            // })
-      
-                  
-                
+            // 트위터 api 이용
             // 2016-11-12 500개 서치
             // dbsearch.scheduleHash();   
             // functions.scheduleauthorize();
@@ -292,3 +228,47 @@ else
 
 }
 
+      //     11-13 cheerio 사용안해서 임시 블록 처리 
+            //     request(url, function(error, response, body){
+            //         if (error) {throw error};
+
+
+            //        var $ = cheerio.load(body);
+           
+                
+            //         // 11-12 트위터 이름 
+            //         $('div.stream-item-header').children('a').children('span').next('span').each(function(i, element){
+            //             var namefr = $(this).children('s').eq(0).text();
+            //             var nameto = $(this).children('b').eq(0).text();
+            //             var name = namefr+nameto;
+            //             config.arrcrawTwitter.name[i] = name;
+            //         })
+
+            //         // 이미지 순서 수정 필 
+            //         $('div.js-tweet-text-container').next('div').children('div').children('div').children('div').children('img').each(function(i, element){
+            //             var src = $(this).attr('src')
+            //             config.arrcrawTwitter.img[i] = src
+            //             // console.log($(this).attr('src'))    //attribs 가져오는거
+            //         })      
+                  
+            //         // 11-12 트위터 내용
+            //         $('div.js-tweet-text-container').children('p').each(function(i, element){
+            //             var a = $(this).text();
+            //             config.arrcrawTwitter.text[i]= a;
+            //         })           
+               
+            //         //끝나는 부분에 object 값 넣어주기
+            //         for(var i = 0 ; i < config.arrcrawTwitter.text.length ;  i++)
+            //         {
+            //             var objcrawlTwitt = new Object()
+            //             objcrawlTwitt.name = config.arrcrawTwitter.name[i]
+            //             objcrawlTwitt.image = config.arrcrawTwitter.img[i] 
+            //             objcrawlTwitt.text = config.arrcrawTwitter.text[i]
+            //             config.sumTwitt.push(objcrawlTwitt)
+
+            //         }
+            //         // console.log(config.sumTwitt.length)
+                  
+            //     }  
+
+            // );    
