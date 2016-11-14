@@ -1,3 +1,4 @@
+
 var Spooky = require('spooky');
 
 var ITUNES_URL = 'https://itunes.apple.com';
@@ -87,16 +88,6 @@ var spooky = new Spooky({
     });
 
 
-/*
-// Uncomment this block to see all of the things Casper has to say.
-// There are a lot.
-// He has opinions.
-spooky.on('console', function (line) {
-    //console.log(line);
-});
-*/
-
-
 spooky.on('error', function (e, stack) {
     console.error(e);
 
@@ -115,7 +106,11 @@ spooky.on('log', function (log) {
     }
 });
 
-                
+
+
+
+
+
 // var links = [];
 // var casper = require('casper').create({
 //     pageSettings: {
