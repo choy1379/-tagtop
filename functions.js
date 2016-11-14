@@ -138,7 +138,7 @@ functions = {
          request.get('https://api.twitter.com/1.1/search/tweets.json?q=' + encsearchquery +
             '&result_type=recent&count=100&include_entities=true&since_id=' + since_id, {headers: {Authorization: bearerheader}}, function(error, body, response) {
                 if(error)
-                console.log();
+                console.log()
                 else {      
                       switch (count) {
                         case 4    : config.schedule.since_id[0] = JSON.parse(body.body).search_metadata.next_results 
@@ -171,15 +171,17 @@ functions = {
      
     
     },
-    user: function(req, res){
-        var searchquery = req.body.screenname;
+    user: function(){
+
+         var searchquery = config.schedule.hashtag[0];   //첫번쨰
         var encsearchquery = encodeURIComponent(searchquery);
         var bearerheader = 'Bearer ' + config.bearertoken;
-        request.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + encsearchquery + '&count=2', {headers: {Authorization: bearerheader}}, function(error, body, response) {
+        request.get('https://stream.twitter.com/1.1/statuses/filter.json?track='+encsearchquery, {headers: {Authorization: bearerheader}}, function(error, body, response) {
              if(error)
              console.log(error);
              else {
-                 res.json({success: true, data:JSON.parse(body.body)});
+                 console.log(body.body)
+                 console.log(response)
              }
          })
     },
@@ -236,29 +238,29 @@ functions = {
                                                     case 0    : config.schedule.since_id[0] = JSON.parse(body.body).search_metadata.next_results 
                                                                 console.log('4번')
                                                                 console.log(JSON.parse(body.body).search_metadata)
-                                                                count--
+                                                            
                                                                 break;
                                                     case 1   : config.schedule.since_id[1] = JSON.parse(body.body).search_metadata.next_results
                                                             console.log('3번')
                                                             console.log(JSON.parse(body.body).search_metadata)
-                                                            count--
+                                                           
                                                                 break;
                                                     case 2  : config.schedule.since_id[2] = JSON.parse(body.body).search_metadata.next_results
                                                             console.log('2번')
                                                             console.log(JSON.parse(body.body).search_metadata)
-                                                            count--
+                                                          
                                                                 break;
                                                     case 3   : config.schedule.since_id[3] = JSON.parse(body.body).search_metadata.next_results
                                                             console.log('1번')
                                                             console.log(JSON.parse(body.body).statuses[0].text)
                                                             console.log(JSON.parse(body.body).search_metadata)
-                                                            count--
+                                                            
                                                                 break;
                                                     case 4  : config.schedule.since_id[4] = JSON.parse(body.body).search_metadata.next_results
                                                             console.log('0번')
                                                             console.log(JSON.parse(body.body).statuses[0].text)
-                                                            console.log(JSON.parse(body.body).search_metadata)
-                                                            count--
+                                                              console.log(JSON.parse(body.body).search_metadata)
+                                                           
                                                                 break
                                                     default    : console.log('Fetch case문 종료');
                                                                 break;

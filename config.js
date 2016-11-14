@@ -12,7 +12,12 @@ var appsettings = {
                     since_id : new Array()
         },
     schedulearray : new Object(),
-    tempArray : new Array()
+    arrcrawTwitter : {
+                    text : new Array(),
+                    name : new Array(),
+                    img : new Array()
+        },
+    sumTwitt : new Array()
 
 };
 

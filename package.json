@@ -46,6 +46,7 @@
     "routes": "*",
     "rxjs": "5.0.0-beta.12",
     "systemjs": "0.19.27",
+    "tiny-jsonrpc": "^2.0.1",
     "zone.js": "^0.6.23"
   },
   "devDependencies": {
