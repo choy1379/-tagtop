@@ -31,7 +31,7 @@ if (cluster.isMaster) {
          scheduler.add(8000, function(done,res){
             console.log('진입')  
             var url = 'https://twitter.com/search?f=tweets&vertical=default&q=%23%EC%95%84%EC%9D%B4%ED%8F%B0&src=typd';
-      
+
             var Spooky = require('spooky');
 
             var spooky = new Spooky({
@@ -39,15 +39,19 @@ if (cluster.isMaster) {
                     //     transport: 'http'
                     // },
                     casper: {
-                          logLevel: 'error',
+                          logLevel: 'debug',
                             verbose: false,
                             options: {
                                 clientScripts: ['https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js']
                             },
+                            viewportSize: {
+                                        width: 1440, height: 768
+                                    },
                                pageSettings: {
                                 webSecurityEnabled: false,  // (http://casperjs.readthedocs.org/en/latest/faq.html#i-m-having-hard-times-downloading-files-using-download)
                                 userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11" // Spoof being Chrome on a Mac (https://msdn.microsoft.com/en-us/library/ms537503(v=vs.85).aspx)
                             }
+                            
                     }
                 }, function (err) {
                     if (err) {
@@ -60,39 +64,33 @@ if (cluster.isMaster) {
 
                 var scrolled = 0; // A variable to keep track of how much we have scrolled
                 var scrollDelta = null; // Keep track of how much our new scroll position differs from our last
+                
 
                 // var getContent = function() {
-                //         // spooky.then accepts a function tuple
-                //         // spooky.then([{
-                //         // scrolled: scrolled,
-                //         // scrollDelta: scrollDelta
-                //         // }, function () {
-                //         //     return scrolled
-                //         // }]);
-                    
-                    
-                //         spooky.wait(2000, [{ scrolled: scrolled,scrollDelta: scrollDelta},function(){                      
+                //         spooky.wait(1000,function(){                      
                 //         this.scrollToBottom(); // scroll to the bottom (http://casperjs.readthedocs.org/en/latest/modules/casper.html#scrolltobottom)
                 //         var newScrolled = this.evaluate(function() {
                 //             return window.scrollY; // grab how far the window is scrolled (https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollY)
                 //         });
-                //         scrollDelta = newScrolled - scrolled; // update scrollDelta          
-                //         scrolled = newScrolled; // and scrolled
-                //         this.emit('logs',scrolled)
-                //         this.emit('logs',scrollDelta)
-                //         this.capture('twitter'+new Date()+'.jpg');
-                //     }]);
-                //     spooky.then( [{ scrolled: scrolled,scrollDelta: scrollDelta},function() { // After we scroll to the bottom (http://casperjs.readthedocs.org/en/latest/modules/casper.html#then)
-                //         //         Userid = this.evaluate(function() {
-                //         //         var elements = __utils__.findAll('#stream-items-id li div div div a span.username.js-action-profile-name');
-                //         //         return elements.map(function(e) {
-                //         //             return e.innerText
-                //         //         });
-                //         // });
-                //         //      this.capture('twitter'+new Date()+'.jpg');
-                //         // this.emit('logs',Userid.length)
+                //         if(  window.scrolled  == null)
+                //         {
+                //             window.scrolled = 0; // and scrolled
+                //         }
+                //         else
+                //         {
+                //           window.scrolled = newScrolled; // and scrolled
+                //         }
+                //          window.scrollDelta = newScrolled - window.scrolled; // update scrollDelta    ;
+                       
+                //         this.emit('logs',window.scrollDelta)
+                //         this.emit('logs',window.scrolled)
+                //         // this.capture('twitter'+new Date()+'.jpg');
+                //     });
+                                    
 
-                //         if (scrollDelta != 0) { // Check whether scrollDelta is zero, which means that we haven't scrolled any further
+                //     spooky.then(function() { // After we scroll to the bottom (http://casperjs.readthedocs.org/en/latest/modules/casper.html#then)
+                //         this.emit('logs',window.scrollDelta )
+                //         if (window.scrollDelta != 0) { // Check whether scrollDelta is zero, which means that we haven't scrolled any further                                 
                 //                     getContent(); // If scrollDelta _has_ changed, recursively call getContent
                 //              } else {
                 //             spooky.then(function() { // Otherwise
@@ -103,50 +101,96 @@ if (cluster.isMaster) {
                 //                 console.log("…wrote HTML to", filename);
                 //             });
                 //         }
-                //     }]);
+                //     });
                 // };
-            
-                // getContent(); // run our recursive function
+                //     getContent(); // run our recursive function
+               
+             
 
-            for(var i = 0; i<20; i++)
-            {
-                    spooky.then(function(spooky){
-                    this.scrollToBottom();
-                    this.wait(1000);
-                     this.emit('logs','1번쨰') 
-                       this.emit('logs',spooky) 
-                });
-                 spooky.then(function(){       
-                   
-                    this.scrollToBottom();
-                    this.wait(1000);
-                    // this.capture('twitter'+new Date()+'.jpg');
-                     
-                });  
-                spooky.then(function(){
-                    //현 페이지 유저 id값 가져오기
-                    Userid = this.evaluate(function() {
-                                        var elements = __utils__.findAll('#stream-items-id li div div div a span.username.js-action-profile-name');
-                                        return elements.map(function(e) {
-                                            return e.innerText
-                                        });
-                                });
-                    value = this.evaluate(function() {
-                        });
-
-                    this.emit('logs',Userid.length)
-                    if(Userid.length <300)
+                    for(var i = 0; i<20; i++)
                     {
-                    this.capture('twitter'+new Date()+'.jpg');
+                            spooky.then(function(){
+                            this.scrollToBottom();
+                            this.wait(1000);
+                            // this.emit('logs','1번쨰') 
+                            var newScrolleds = this.evaluate(function() {
+                                    return window.scrollY;
+                                });
+                                
+                                this.emit('logs',newScrolleds)
+                            var newScrolled = this.evaluate(function() {
+                                return window.document.body.scrollTop = document.body.scrollHeight;
+                                });
+                                    this.emit('logs',newScrolled)
+                                    
+                        });
+                        spooky.then(function(){       
+                        
+                            this.scrollToBottom();
+                            this.wait(1000);
+                                                    var newScrolleds = this.evaluate(function() {
+                                    return window.scrollY;
+                                });
+                                
+                                this.emit('logs',newScrolleds)
+                            var newScrolled = this.evaluate(function() {
+                                return window.document.body.scrollTop = document.body.scrollHeight;
+                                });
+                                    this.emit('logs',newScrolled)
+                            // this.capture('twitter'+new Date()+'.jpg');
+                            
+                        });  
+                        spooky.then(function(){
+                            //현 페이지 유저 id값 가져오기
+                            Userid = this.evaluate(function() {
+                                                var elements = __utils__.findAll('#stream-items-id li div div div a span.username.js-action-profile-name');
+                                                return elements.map(function(e) {
+                                                    return e.innerText
+                                                });
+                                        });
+                            value = this.evaluate(function() {
+                                });
 
+                            this.emit('logs',Userid)
+                       
+                   
+
+                            
+
+                        });
+                        
                     }
-
-                });
                 
-            }
-                
-            
+                //     spooky.then(function(){
 
+                //     this.scrollToBottom();
+                //     var newScrolleds = this.evaluate(function() {
+                //           return window.scrollY;
+                //     });
+                    
+                //     this.emit('logs',newScrolleds)
+                //    var newScrolled = this.evaluate(function() {
+                //     return window.document.body.scrollTop = document.body.scrollHeight;
+                //     });
+                //         this.emit('logs',newScrolled)
+                //         this.wait(5000);
+                //         this.capture('twitter'+new Date()+'.jpg');
+
+                //     });
+                // spooky.then(function(){
+                //     //현 페이지 유저 id값 가져오기
+                //     Userid = this.evaluate(function() {
+                //                         var elements = __utils__.findAll('#stream-items-id li div div div a span.username.js-action-profile-name');
+                //                         return elements.map(function(e) {
+                //                             return e.innerText
+                //                         });
+                //                 });
+                //     value = this.evaluate(function() {
+                //         });
+
+                //     this.emit('logs',Userid.length)
+
+                // });
               
                 // spooky.waitFor(function check() {
                 //     return this.evaluate(function() {
