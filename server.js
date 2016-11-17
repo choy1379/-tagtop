@@ -128,6 +128,7 @@ if (cluster.isMaster) {
                                 this.wait(1000);    
                                 this.capture('insta'+new Date()+'.jpg');
                                 
+                                
                         });
 
                         //넥스트 버튼 대기
@@ -139,12 +140,12 @@ if (cluster.isMaster) {
                         spooky.then([{x: selectXPath},function() {
                         var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
                         eval(x);
-                        this.click(xPath(xpathExpr1));                                                          
+                        this.click(xPath(xpathExpr1));                     
+                        this.wait(1000);                                     
                         }]);
 
                         //넥스트 후 
-                        spooky.then(function() {                    
-                                  this.wait(3000);    
+                        spooky.then(function() {      
                                  userid = this.evaluate(function() {
                                         var elements = __utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a');
                                         return elements.map(function(e) {
