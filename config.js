@@ -11,7 +11,7 @@ var appsettings = {
                     name : new Array(),
                     since_id : new Array()
         },
-    schedulearray : new Object(),
+    twitterdata : new Object(),
     arrcrawTwitter : {
                     text : new Array(),
                     name : new Array(),

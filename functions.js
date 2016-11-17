@@ -6,6 +6,7 @@ var mongojs = require('mongojs');
 var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
 var synrequest = require('sync-request');
 
+
 functions = {
  
     authorize: function(req, res) {
@@ -276,7 +277,165 @@ functions = {
  
         }
     
+    },
+    scheduleinstagram: function() {
+
+            console.log('schedule instagram 진입')  
+
+            var searchquery = config.schedule.hashtag[0];   //첫번쨰)
+            var encsearchquery = encodeURIComponent(searchquery);
+            var url = 'https://www.instagram.com/explore/tags/' + encsearchquery;
+            var Spooky = require('spooky');
+            var spooky = new Spooky({
+
+                    casper: {
+                          logLevel: 'debug',
+                            verbose: false,
+                            options: {
+                                clientScripts: ['https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js']
+                            },
+                            viewportSize: {
+                                        width: 1440, height: 768
+                                    },
+                               pageSettings: {
+                                webSecurityEnabled: false,  // (http://casperjs.readthedocs.org/en/latest/faq.html#i-m-having-hard-times-downloading-files-using-download)
+                                userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11" // Spoof being Chrome on a Mac (https://msdn.microsoft.com/en-us/library/ms537503(v=vs.85).aspx)
+                            }
+                            
+                    }
+                }, function (err) {
+                    if (err) {
+                        e = new Error('Failed to initialize SpookyJS');
+                        e.details = err;
+                        throw e;
+                    }
+                    
+
+                     spooky.start(url);
+                     var config = require('./config');
+                    var selectXPath = 'xPath = function(expression) { return {    type: "xpath", path: expression, toString: function() {return this.type + " selector: " + this.path; }  };};'
+                    var instagram = function ()
+                    {                         
+                           spooky.then(function(){
+                            this.scrollToBottom();
+                            this.wait(1000);
+                            var newScrolleds = this.evaluate(function() {
+                                    return window.scrollY;
+                                });
+                              this.emit('logs',newScrolleds)
+                            var newScrolled = this.evaluate(function() {
+                                return window.document.body.scrollTop = document.body.scrollHeight;
+                                });
+                             this.emit('logs',newScrolled)             
+  
+                        });
+                        
+                        //더읽기 클릭
+                        spooky.then([{x: selectXPath},function() {
+                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[3]/a';
+                            eval(x);
+                            this.click(xPath(xpathExpr1));                                        
+                            
+                        }]);
+                        
+                        //첫번째그림 대기
+                        spooky.waitForSelector('#react-root > section > main > article > div:nth-child(4) > div._nljxa > div:nth-child(6)',function(){
+                        });
+                        
+                        //  첫번째 그림대기후  -> 텍스트내용 전부다 배열로받은값 임시주석
+                        //  spooky.then(function(){
+                        //     this.scrollToBottom();
+                        //     this.wait(1000);    
+                        //     text = this.evaluate(function() {
+                        //                 var elements = __utils__.findAll('#react-root > section > main > article > div > div > div > a > div > div > img');
+                        //                 return elements.map(function(e) {
+                        //                     return e.getAttribute('alt');    
+                        //                 });
+                        //         });
+
+                        //     // this.emit('logs',text)
+                        //  });
+                       
+                        //첫번째그림 클릭
+                          spooky.then([{x: selectXPath},function() {
+                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[1]/div[1]/a[1]';
+                            eval(x);
+                            this.click(xPath(xpathExpr1));                                        
+                            
+                        }]);
+                        
+                        //유저아이디값
+                          spooky.waitForSelector('body > div:nth-child(9)',function(){
+                                 userid = this.evaluate(function() {
+                                        var elements = __utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a');
+                                        return elements.map(function(e) {
+                                            return e.getAttribute('title');    
+                                        });  
+                                });
+
+                                this.emit('dbinsert',userid)
+                                this.wait(1000);    
+                                // this.capture('insta'+new Date()+'.jpg');
+                                
+                                
+                        });
+
+                        //이 구문에 카운트나 for문 돌려서 한개씩 담는걸로 해야될듯..
+                        //넥스트 버튼 대기
+                         spooky.waitForSelector('body > div:nth-child(9) > div > div._quk42 > div > div > a._de018.coreSpriteRightPaginationArrow',function(){     
+
+                        });
+
+                        //넥스트 버튼 클릭 
+                        spooky.then([{x: selectXPath},function() {
+                        var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
+                        eval(x);
+                        this.click(xPath(xpathExpr1));                     
+                        this.wait(2000);                                    
+                        }]);
+
+                        //넥스트 후 
+                        spooky.then(function() {      
+                                 userid = this.evaluate(function() {
+                                        var elements = __utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a');
+                                        return elements.map(function(e) {
+                                            return e.getAttribute('title');    
+                                        });  
+                                });
+                            this.emit('dbinsert',userid)
+                        //  this.capture('insta'+new Date()+'.jpg');
+                        });
+
+                      
+
+                    }
+
+            
+                    instagram()
+                    
+                    
+                    spooky.run();
+                
+                
+                });
+
+             spooky.on('logs', function (logs) {
+                                console.log(logs);
+                            });
+            spooky.on('dbinsert', function (test) {
+                     instagram = new Object() 
+                    instagram.name = test 
+                    console.log(instagram)
+                    //디비 입력
+                    //   db.user.save(instagram, function(){
+                    //     });
+                      
+                });
+                        
+            // 스케쥴완성되면 풀자
+            // done();
     }
+
 }
 
 
