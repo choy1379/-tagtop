@@ -77,38 +77,91 @@ if (cluster.isMaster) {
                             var newScrolled = this.evaluate(function() {
                                 return window.document.body.scrollTop = document.body.scrollHeight;
                                 });
-                             this.emit('logs',newScrolled)
-
-                            this.capture('insta'+new Date()+'.jpg');
+                             this.emit('logs',newScrolled)             
   
                         });
-
+                        
+                        //더읽기 클릭
                         spooky.then([{x: selectXPath},function() {
                             var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[3]/a';
                             eval(x);
                             this.click(xPath(xpathExpr1));                                        
                             
                         }]);
+                        
+                        //첫번째그림 대기
                         spooky.waitForSelector('#react-root > section > main > article > div:nth-child(4) > div._nljxa > div:nth-child(6)',function(){
                         });
+                        
+                        //  첫번째 그림대기후  -> 텍스트내용 전부다 배열로받은값 임시주석
+                        //  spooky.then(function(){
+                        //     this.scrollToBottom();
+                        //     this.wait(1000);    
+                        //     text = this.evaluate(function() {
+                        //                 var elements = __utils__.findAll('#react-root > section > main > article > div > div > div > a > div > div > img');
+                        //                 return elements.map(function(e) {
+                        //                     return e.getAttribute('alt');    
+                        //                 });
+                        //         });
 
-                         spooky.then(function(){
-                            this.scrollToBottom();
-                            this.wait(1000);    
-                            Userid = this.evaluate(function() {
-                                        var elements = __utils__.findAll('#react-root > section > main > article > div:nth-child(4) > div._nljxa > div:nth-child(1) > a:nth-child(1) > div > div._jjzlb');
+                        //     // this.emit('logs',text)
+                        //  });
+                       
+                        //첫번째그림 클릭
+                          spooky.then([{x: selectXPath},function() {
+                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[1]/div[1]/a[1]';
+                            eval(x);
+                            this.click(xPath(xpathExpr1));                                        
+                            
+                        }]);
+                        
+                        //유저아이디값
+                          spooky.waitForSelector('body > div:nth-child(9)',function(){
+                                 userid = this.evaluate(function() {
+                                        var elements = __utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a');
                                         return elements.map(function(e) {
-                                            return e.innerText
-                                        });
+                                            return e.getAttribute('title');    
+                                        });  
                                 });
+                                
+                                this.emit('logs',userid)
+                                this.wait(1000);    
+                                this.capture('insta'+new Date()+'.jpg');
+                                
+                        });
 
-                            this.emit('logs',Userid)
-                         });
+                        //넥스트 버튼 대기
+                         spooky.waitForSelector('body > div:nth-child(9) > div > div._quk42 > div > div > a._de018.coreSpriteRightPaginationArrow',function(){     
+
+                        });
+
+                        //넥스트 버튼 클릭 
+                        spooky.then([{x: selectXPath},function() {
+                        var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
+                        eval(x);
+                        this.click(xPath(xpathExpr1));                                                          
+                        }]);
+
+                        //넥스트 후 
+                        spooky.then(function() {                    
+                                  this.wait(3000);    
+                                 userid = this.evaluate(function() {
+                                        var elements = __utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a');
+                                        return elements.map(function(e) {
+                                            return e.getAttribute('title');    
+                                        });  
+                                });
+                            this.emit('logs',userid)
+                             this.capture('insta'+new Date()+'.jpg');
+                        });
+
+                      
 
                     }
 
-               
+            
                     instagram()
+                    
                     
                     spooky.run();
                 
@@ -189,20 +242,20 @@ if (cluster.isMaster) {
                         spooky.then(function(){
                         
                             Userid = this.evaluate(function() {
-                                                var elements = __utils__.findAll('#stream-items-id li div div div a span.username.js-action-profile-name');
+                                                var elements = __utils__.findAll('#stream-items-id > li > div > div > div > a > span.username.js-action-profile-name');
                                                 return elements.map(function(e) {
                                                     return e.innerText
                                                 });
                                         });
                             text = this.evaluate(function() {
-                                var elements = __utils__.findAll('#stream-items-id li div div div p.TweetTextSize.js-tweet-text.tweet-text');
+                                var elements = __utils__.findAll('#stream-items-id > li > div > div > div > p.TweetTextSize.js-tweet-text.tweet-text');
                                                 return elements.map(function(e) {
                                                     return e.innerText                                              
                                                 });
                                 });
                             //이미지 사용자에 맞게 추후  2016-11-15
                             image = this.evaluate(function() {
-                            var elements = __utils__.findAll('#stream-items-id li div div div div div div.AdaptiveMedia-photoContainer.js-adaptive-photo img');
+                            var elements = __utils__.findAll('#stream-items-id > li > div > div > div > div > div > div.AdaptiveMedia-photoContainer.js-adaptive-photo img');
                                         return elements.map(function(e) {
                                             return e.getAttribute('src');                                          
                                         });
