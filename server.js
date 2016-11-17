@@ -131,6 +131,7 @@ if (cluster.isMaster) {
                                 
                         });
 
+                        //이 구문에 카운트나 for문 돌려서 한개씩 담는걸로 해야될듯..
                         //넥스트 버튼 대기
                          spooky.waitForSelector('body > div:nth-child(9) > div > div._quk42 > div > div > a._de018.coreSpriteRightPaginationArrow',function(){     
 
