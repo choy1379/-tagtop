@@ -41,7 +41,7 @@ var CollectComponent = (function () {
         this.searchdata = event.data;
         var query = {
             "name": this.searchdata.name,
-            "hashtag": this.searchdata.hashtag
+            "searchquery": this.searchdata.hashtag
         };
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
@@ -78,6 +78,9 @@ var CollectComponent = (function () {
         this.appState = state;
         //temp validate check
     };
+    CollectComponent.prototype.Exportcsv = function () {
+        this.gridOptions2.api.exportDataAsCsv('asd');
+    };
     CollectComponent.prototype.addinfo = function (email, name, hashtag, frcal, tocal, twitter) {
         var addinfo = {
             email: email,
@@ -88,21 +91,21 @@ var CollectComponent = (function () {
             twitter: twitter
         };
         // Hashtag search&insert count maximum 500 2016/10/30
-        // $.ajax({
-        //         type: 'POST',
-        //             data: {
-        //                       "hashtag" : hashtag,
-        //                       "email" :  email,
-        //                       "frcal" : frcal,
-        //                       "tocal" : tocal,
-        //                       "twitter" : twitter,
-        //                      "name"    : name
-        //                 },
-        //         contentType: 'application/X-www-form-urlencoded',
-        //         url: 'http://localhost:4100/dbUserinsert'
-        //     });
-        //    http.post 변경전까지 임시주석 11/05
-        this.searchajax(hashtag, addinfo);
+        $.ajax({
+            type: 'POST',
+            data: {
+                "hashtag": hashtag,
+                "email": email,
+                "frcal": frcal,
+                "tocal": tocal,
+                "twitter": twitter,
+                "name": name
+            },
+            contentType: 'application/X-www-form-urlencoded',
+            url: 'http://localhost:4100/dbUserinsert'
+        });
+        //    http.post 변경전까지 구성요소바꿈 
+        //   this.searchajax(hashtag,addinfo);
         //    console.log("서치 완료")
         this.changeState('appState', 'default');
         this.VailidateForm.reset();
@@ -311,15 +314,16 @@ var CollectComponent = (function () {
             { headerName: "Name", field: "name", sortingOrder: ["asc", "desc"], editable: false, hide: false },
             { headerName: "hashtag", field: "hashtag", sortingOrder: ["asc", "desc"], editable: false, hide: false },
             { headerName: "tocal", field: "tocal", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-            { headerName: "소셜미디어", field: "twitter", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+            { headerName: "소셜미디어", field: "sns", sortingOrder: ["asc", "desc"], editable: false, hide: false },
         ];
     };
     CollectComponent.prototype.createColumnDefs2 = function () {
         return [
-            { headerName: "Name", field: "name", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-            { headerName: "hashtag", field: "hashtag", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-            { headerName: "tocal", field: "tocal", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-            { headerName: "소셜미디어", field: "twitter", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+            { headerName: "hashtag", field: "searchquery", sortingOrder: ["asc", "desc"], editable: false, hide: false, width: 80 },
+            { headerName: "날짜", field: "date", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+            { headerName: "소셜미디어", field: "sns", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+            { headerName: "내용", field: "text", sortingOrder: ["asc", "desc"], editable: false, hide: false, width: 300 },
+            { headerName: "이미지", field: "image", sortingOrder: ["asc", "desc"], editable: false, hide: false, width: 300 },
         ];
     };
     CollectComponent = __decorate([

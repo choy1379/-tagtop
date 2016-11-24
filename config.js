@@ -17,7 +17,7 @@ var appsettings = {
                     name : new Array(),
                     img : new Array()
         },
-    sumTwitt : new Array()
+    Twitt : new Array()
 
 };
 

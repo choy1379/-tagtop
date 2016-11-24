@@ -29,6 +29,7 @@ export class CollectComponent implements OnInit,OnDestroy {
         this.gridOptions.columnDefs = this.createColumnDefs();
         this.gridOptions2 = <GridOptions>{};
         this.gridOptions2.columnDefs = this.createColumnDefs2();
+        
 
     
 
@@ -64,7 +65,7 @@ onRowClicked(event: any) {
       
        var query = {
                         "name" : this.searchdata.name,
-                        "hashtag" : this.searchdata.hashtag
+                        "searchquery" : this.searchdata.hashtag
        }
        
         var headers = new Headers(); 
@@ -110,7 +111,10 @@ ngOnInit(){
          //temp validate check
  
   }
-
+    Exportcsv()
+    {
+        this.gridOptions2.api.exportDataAsCsv('asd');
+    }
    addinfo(
     email:string,
     name:string,
@@ -131,24 +135,24 @@ ngOnInit(){
 
       }     
   // Hashtag search&insert count maximum 500 2016/10/30
-    // $.ajax({
-    //         type: 'POST',
-    //             data: {
-    //                       "hashtag" : hashtag,
-    //                       "email" :  email,
-    //                       "frcal" : frcal,
-    //                       "tocal" : tocal,
-    //                       "twitter" : twitter,
-    //                      "name"    : name
+    $.ajax({
+            type: 'POST',
+                data: {
+                          "hashtag" : hashtag,
+                          "email" :  email,
+                          "frcal" : frcal,
+                          "tocal" : tocal,
+                          "twitter" : twitter,
+                         "name"    : name
                         
-    //                 },
-    //         contentType: 'application/X-www-form-urlencoded',
-    //         url: 'http://localhost:4100/dbUserinsert'
-    //     });
+                    },
+            contentType: 'application/X-www-form-urlencoded',
+            url: 'http://localhost:4100/dbUserinsert'
+        });
     
 
-//    http.post 변경전까지 임시주석 11/05
-  this.searchajax(hashtag,addinfo);
+//    http.post 변경전까지 구성요소바꿈 
+//   this.searchajax(hashtag,addinfo);
 //    console.log("서치 완료")
    this.changeState('appState','default')
    this.VailidateForm.reset()
@@ -385,7 +389,7 @@ ngOnInit(){
         { headerName: "Name", field: "name", sortingOrder: ["asc", "desc"], editable: false, hide: false },
         { headerName: "hashtag", field: "hashtag", sortingOrder: ["asc", "desc"], editable: false, hide: false },
         { headerName: "tocal", field: "tocal", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-        { headerName: "소셜미디어", field: "twitter", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "소셜미디어", field: "sns", sortingOrder: ["asc", "desc"], editable: false, hide: false },
     
 
         ];
@@ -393,12 +397,11 @@ ngOnInit(){
     
   private createColumnDefs2() {
         return [
-        { headerName: "Name", field: "name", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-        { headerName: "hashtag", field: "hashtag", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-        { headerName: "tocal", field: "tocal", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-        { headerName: "소셜미디어", field: "twitter", sortingOrder: ["asc", "desc"], editable: false, hide: false },
-    
-
+        { headerName: "hashtag", field: "searchquery", sortingOrder: ["asc", "desc"], editable: false, hide: false, width: 80},
+        { headerName: "날짜", field: "date", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "소셜미디어", field: "sns", sortingOrder: ["asc", "desc"], editable: false, hide: false },
+        { headerName: "내용", field: "text", sortingOrder: ["asc", "desc"], editable: false, hide: false, width:300 },
+        { headerName: "이미지", field: "image", sortingOrder: ["asc", "desc"], editable: false, hide: false, width:300 },
         ];
     }
     

@@ -33,25 +33,30 @@ if (cluster.isMaster) {
 
                 dbsearch.scheduleHash()  
                 
-                setTimeout(function() {
-                        functions.scheduleinstagram()
-                }, 3000);
+                // setTimeout(function() {
+                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
+                //     {
+                //         functions.scheduleinstagram(i)
+                //     }
+                // }, 3000);
+
+                // setTimeout(function() {
+                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
+                //     {
+                //         functions.scheduletwitter(i)
+                //     }
+                // }, 3000);
             //  done();     
         });
 
 
-        
-        //  scheduler.add(8000, function(done,res){
-        //       setTimeout(function() {
-        //                 functions.scheduleinstagram()
-        //         }, 3000);
-        //     done();
-        // });
+      
 
 
 }
 else
 {
+    
         app.use(bodyParser.json({limit: '50mb'}));
         // app.use(bodyParser.urlencoded({extended: true,parameterLimit: 10000,limit: 1024 * 1024 * 10}));
         app.use(bodyParser.urlencoded({

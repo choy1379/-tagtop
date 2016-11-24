@@ -24,10 +24,10 @@ functions = {
    searchid :function(req, res) {
      console.log(req.body)
      console.log(req.body.name)
-     console.log(req.body.hashtag)
+     console.log(req.body.searchquery)
 
      //임시 dummy 테이블 
-      db.dummy.find({"name": req.body.name , "hashtag" : req.body.hashtag}, (err, collect) => {
+      db.dummy.find({"id": req.body.name , "searchquery" : req.body.searchquery}, (err, collect) => {
         if (err) {
           return res.send(err);
         }

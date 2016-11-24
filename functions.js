@@ -278,11 +278,12 @@ functions = {
         }
     
     },
-    scheduleinstagram: function() {
+    scheduleinstagram: function(count) {
 
             console.log('schedule instagram 진입')  
-            console.log(config.schedule.hashtag.length)
-            var searchquery = config.schedule.hashtag[0];   //첫번쨰)
+            console.log(count)
+            var searchquery = config.schedule.hashtag[count];   
+            var id = config.schedule.name[count];
             var encsearchquery = encodeURIComponent(searchquery);
             var url = 'https://www.instagram.com/explore/tags/' + encsearchquery;
             var Spooky = require('spooky');
@@ -351,7 +352,7 @@ functions = {
                         }]);
                         
                         //유저아이디값
-                          spooky.waitForSelector('body > div:nth-child(9)',function(){
+                          spooky.waitForSelector('body > div:nth-child(9)',[{searchquery: searchquery,id:id},function(){
                                 userid = this.evaluate(function() {
                                         return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
                                 });
@@ -379,21 +380,23 @@ functions = {
                                 instagram.date = date
                                 instagram.image = image
                                 instagram.like = like.length
+                                instagram.sns = 'instagram'
                                 instagram.text = text
+                                instagram.searchquery = searchquery
+                                instagram.id = id 
                                 this.emit('dbinsert',instagram)
                                 this.wait(1000);    
                                 // this.capture('insta'+new Date()+'.jpg');
                                 
                                 
-                        });
+                        }]);
 
-                        //이 구문에 카운트나 for문 돌려서 한개씩 담는걸로 해야될듯..
                         //넥스트 버튼 대기
-                     
                             spooky.waitForSelector('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img',function(){
                         });
-
-                        for(var i =0; i<100; i++)
+                        
+                        //for문 개수만큼 수정
+                        for(var i =0; i<10; i++)
                         {
                         //넥스트 버튼 클릭 
                         spooky.then([{x: selectXPath},function() {
@@ -404,7 +407,7 @@ functions = {
                         }]);
 
                         //넥스트 후 
-                        spooky.then(function() {      
+                        spooky.then([{searchquery: searchquery,id:id},function() {      
                            userid = this.evaluate(function() {
                                         return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
                                 });
@@ -445,12 +448,13 @@ functions = {
                                 instagram.userid = userid
                                 instagram.date = date
                                 instagram.image = image
-                           
+                                instagram.sns = 'instagram'
                                 instagram.text = text
+                                instagram.searchquery = searchquery
+                                instagram.id = id 
                                 this.emit('dbinsert',instagram)
-                                // this.emit('logs', like)
-                                // this.wait(1000);    
-                        });    
+
+                        }]);    
                         }     
 
                     }
@@ -463,7 +467,7 @@ functions = {
                 });
 
              spooky.on('logs', function (logs) {
-                            console.log('like 수 :' + logs);
+                            console.log(logs);
                             });
 
              spooky.on('dbinsert', function (instagram) {
@@ -472,18 +476,20 @@ functions = {
                   instagram.date = ConvertDt
                   console.log(instagram)
 
-                    //디비 입력
-                    //   db.user.save(instagram, function(){
-                    //     });
+                    // //디비 입력
+                      db.dummy.save(instagram, function(){
+                        });
                       
                 });
                         
-            // 스케쥴완성되면 풀자
-            // done();
     },
-     scheduletwitter: function() {
+     scheduletwitter: function(count) {
            console.log('twitter 진입')  
-            var url = 'https://twitter.com/search?f=tweets&vertical=default&q=%23%EC%95%84%EC%9D%B4%ED%8F%B0&src=typd';
+           console.log(count)
+            var searchquery = config.schedule.hashtag[count];   
+            var id = config.schedule.name[count];
+            var encsearchquery = encodeURIComponent(searchquery);
+            var url = 'https://twitter.com/search?f=tweets&vertical=default&q=%23'+encsearchquery+'&src=typd';
 
             var Spooky = require('spooky');
 
@@ -543,7 +549,12 @@ functions = {
                             // this.capture('twitter'+new Date()+'.jpg');
                             
                         });  
-                        spooky.then(function(){
+                    
+                    }
+                
+                  var twitterins = function()
+                  {
+                          spooky.then([{searchquery: searchquery,id:id},function(){
                         
                             Userid = this.evaluate(function() {
                                                 var elements = __utils__.findAll('#stream-items-id > li > div > div > div > a > span.username.js-action-profile-name');
@@ -552,60 +563,81 @@ functions = {
                                                 });
                                         });
                             text = this.evaluate(function() {
-                                var elements = __utils__.findAll('#stream-items-id > li > div > div > div > p.TweetTextSize.js-tweet-text.tweet-text');
-                                                return elements.map(function(e) {
-                                                    return e.innerText                                              
+                                                var elements = __utils__.findAll('#stream-items-id > li > div > div > div > p.TweetTextSize.js-tweet-text.tweet-text');
+                                                                return elements.map(function(e) {
+                                                                    return e.innerText                                              
+                                                                });
                                                 });
-                                });
                             
                             image = this.evaluate(function() {
-                            var elements = __utils__.findAll('#stream-items-id > li > div > div > div > div > div > div.AdaptiveMedia-photoContainer.js-adaptive-photo img');
-                                        return elements.map(function(e) {
-                                            return e.getAttribute('src');                                          
-                                        });
-                            });
-                            
-                        
+                                                var elements = __utils__.findAll('#stream-items-id > li > div > div > div > div > div > div.AdaptiveMedia-photoContainer.js-adaptive-photo img');
+                                                            return elements.map(function(e) {
+                                                                return e.getAttribute('src');                                          
+                                                            });
+                                                });
+
+                           date = this.evaluate(function() {
+                                                // var elements = __utils__.findAll('#stream-items-id > li > div > div > div > small > a');
+                                                //             return elements.map(function(e) {
+                                                //                 return e.getAttribute('title');                                          
+                                                //             });
+                                                    var elements = __utils__.findAll('#stream-items-id > li > div > div > div > small > a > span._timestamp.js-short-timestamp');
+                                                        return elements.map(function(e) {
+                                                            return e.getAttribute('data-time-ms');                                          
+                                                        });
+                                        
+                                                });
+                  
+            
+                            for(var i = 0; i<Userid.length; i++)
+                            {
+                                data = new Object() 
+                                data.Userid = Userid[i]
+                                data.text = text[i]
+                                data.image = image[i]
+                                data.date = date[i]
+                                data.sns = 'twitter'
+                                data.searchquery = searchquery
+                                data.id = id 
+                                this.emit('dbinsert', data)
+                            }
                                 
-                            this.emit('logs','유저수 ' + Userid.length)
-                            this.emit('logs','본문  ' + text.length)
-                            this.emit('logs','그림  ' + image.length)
+                                //  this.emit('dbinsert', Userid.length)
+                        
+                        }]);
+                  }
 
-                        });
-                    }
-
-                    //for 문 추후 수정
-                    for (var i = 0 ; i<2; i++)
+                    // i값 추후 수정해줘야됨 개수에 따라  2016/11/24
+                    for (var i = 0 ; i<3; i++)
                     {
-                      twitter();
+                            //마지막 insert
+                        if( i == 2)
+                        {
+                            twitterins()
+                        }
+                        else  //for문 만큼 Bottom
+                        {
+                             twitter()
+                        }
+
                     }
 
                     spooky.run();
                              
                 });
+            spooky.on('logs', function (logs) {
+                                        console.log(logs);
+                                        });
 
-
-            spooky.on('error', function (e, stack) {
-                console.error(e);
-
-                if (stack) {
-                    console.log(stack);
-                }
-            });
-
-            spooky.on('display', function (text) {
-                console.log(text);
-            });
-
-            spooky.on('log', function (log) {
-                if (log.space === 'remote') {
-                    console.log(log.message.replace(/ \- .*/, ''));
-                }
-            });
-
-             spooky.on('logs', function (logs) {
-                                console.log(logs);
-                            });
+             spooky.on('dbinsert', function (data) {
+                    var dt = new Date(Number(data.date))
+                    var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                    data.date = ConvertDt
+             
+                    //디비 입력
+                      db.dummy.save(data, function(){
+                        });
+                });
 
 
      }
