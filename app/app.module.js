@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
+var ng2_charts_1 = require('ng2-charts/ng2-charts');
 var app_component_1 = require('./app.component');
 var search_component_1 = require('./components/search/search.component');
 var navbar_component_1 = require('./components/navbar/navbar.component');
@@ -29,7 +30,8 @@ var AppModule = (function () {
                 forms_1.FormsModule,
                 http_1.HttpModule,
                 main_1.AgGridModule.withNg2ComponentSupport(),
-                forms_1.ReactiveFormsModule
+                forms_1.ReactiveFormsModule,
+                ng2_charts_1.ChartsModule
             ],
             declarations: [app_component_1.AppComponent,
                 search_component_1.SearchComponent,

@@ -31,21 +31,24 @@ if (cluster.isMaster) {
 
             scheduler.add(8000, function(done,res){
 
+                //2017-01-08  임시 주석
+                dbsearch.deleteAll()
                 dbsearch.scheduleHash()  
                 
-                // setTimeout(function() {
-                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
-                //     {
-                //         functions.scheduleinstagram(i)
-                //     }
-                // }, 3000);
+                setTimeout(function() {
+                    for(var i = 0; i < config.schedule.hashtag.length; i++)
+                    {
+                        functions.scheduleinstagram(i)
+                    }
+                }, 3000);
 
-                // setTimeout(function() {
-                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
-                //     {
-                //         functions.scheduletwitter(i)
-                //     }
-                // }, 3000);
+                setTimeout(function() {
+                    for(var i = 0; i < config.schedule.hashtag.length; i++)
+                    {
+                        functions.scheduletwitter(i)
+                    }
+                }, 3000);
+                
             //  done();     
         });
 
@@ -89,67 +92,67 @@ else
 
             // setTimeout(function() {
             
-            //             async.waterfall([
-            //                                 function(callback){
-            //                                 console.log("since_id")
-            //                                 functions.user()
-            //                                 // for(var i = 0 ; i< 2; i++) //수정해야됨
-            //                                 // {
-            //                                 //     functions.Schedulesearch(i);//0번째 since_id 가져오기                                            
-            //                                 // }
-            //                                 // setTimeout(function() {
-            //                                 //     callback(null,config.schedule.since_id)
-            //                                 // }, 3000);
+                        // async.waterfall([
+                        //                     function(callback){
+                        //                     console.log("since_id")
+                        //                     functions.user()
+                        //                     // for(var i = 0 ; i< 2; i++) //수정해야됨
+                        //                     // {
+                        //                     //     functions.Schedulesearch(i);//0번째 since_id 가져오기                                            
+                        //                     // }
+                        //                     // setTimeout(function() {
+                        //                     //     callback(null,config.schedule.since_id)
+                        //                     // }, 3000);
                                             
                                              
-            //                                 },
-            //                                 function(scheduleId,callback){                                                                                                                                                                                                               
-            //                                      console.log("next_result 1")
-            //                                      console.log(scheduleId)
-            //                                     functions.ScheduleFeatch(scheduleId);
-            //                                       setTimeout(function() {
-            //                                     callback(null,config.schedule.since_id)
-            //                                 }, 3000);
-            //                                 },
-            //                                 function(scheduleId,callback){
-            //                                      console.log("next_result 2")
-            //                                      console.log(scheduleId)
-            //                                      functions.ScheduleFeatch(scheduleId);
-            //                                     setTimeout(function() {
-            //                                     callback(null,config.schedule.since_id)
-            //                                 }, 3000);
-            //                                 }
-            //                                 ,
-            //                                 function(scheduleId,callback){
-            //                                      console.log("next_result 3")
-            //                                      console.log(scheduleId)
-            //                                      functions.ScheduleFeatch(scheduleId);
-            //                                     setTimeout(function() {
-            //                                     callback(null,config.schedule.since_id)
-            //                                 }, 3000);
-            //                                 }
-            //                                 ,
-            //                                 function(scheduleId,callback){
-            //                                      console.log("next_result 4")
-            //                                      console.log(scheduleId)
-            //                                      functions.ScheduleFeatch(scheduleId);
-            //                                     setTimeout(function() {
-            //                                     callback(null,config.schedule.since_id)
-            //                                 }, 3000);
-            //                                 }
-            //                                  ,
-            //                                 function(scheduleId,callback){
-            //                                      console.log("next_result 5")
-            //                                      console.log(scheduleId)
-            //                                      //next_result 없을때 값처리해야됨
-            //                                      functions.ScheduleFeatch(scheduleId);
-            //                                     setTimeout(function() {
-            //                                     callback(null,config.schedule.since_id)
-            //                                 }, 3000);
-            //                                 }
+                        //                     },
+                        //                     function(scheduleId,callback){                                                                                                                                                                                                               
+                        //                          console.log("next_result 1")
+                        //                          console.log(scheduleId)
+                        //                         functions.ScheduleFeatch(scheduleId);
+                        //                           setTimeout(function() {
+                        //                         callback(null,config.schedule.since_id)
+                        //                     }, 3000);
+                        //                     },
+                        //                     function(scheduleId,callback){
+                        //                          console.log("next_result 2")
+                        //                          console.log(scheduleId)
+                        //                          functions.ScheduleFeatch(scheduleId);
+                        //                         setTimeout(function() {
+                        //                         callback(null,config.schedule.since_id)
+                        //                     }, 3000);
+                        //                     }
+                        //                     ,
+                        //                     function(scheduleId,callback){
+                        //                          console.log("next_result 3")
+                        //                          console.log(scheduleId)
+                        //                          functions.ScheduleFeatch(scheduleId);
+                        //                         setTimeout(function() {
+                        //                         callback(null,config.schedule.since_id)
+                        //                     }, 3000);
+                        //                     }
+                        //                     ,
+                        //                     function(scheduleId,callback){
+                        //                          console.log("next_result 4")
+                        //                          console.log(scheduleId)
+                        //                          functions.ScheduleFeatch(scheduleId);
+                        //                         setTimeout(function() {
+                        //                         callback(null,config.schedule.since_id)
+                        //                     }, 3000);
+                        //                     }
+                        //                      ,
+                        //                     function(scheduleId,callback){
+                        //                          console.log("next_result 5")
+                        //                          console.log(scheduleId)
+                        //                          //next_result 없을때 값처리해야됨
+                        //                          functions.ScheduleFeatch(scheduleId);
+                        //                         setTimeout(function() {
+                        //                         callback(null,config.schedule.since_id)
+                        //                     }, 3000);
+                        //                     }
                                            
-            //                                 ]
-            //                             );
+                        //                     ]
+                        //                 );
 
             //     console.log('종료')
             // }, 3000); 

@@ -2,6 +2,8 @@ import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule,ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import {ChartsModule} from 'ng2-charts/ng2-charts';
+
 
 import { AppComponent }  from './app.component';
 
@@ -21,7 +23,9 @@ import {routing} from './app.routing';
               FormsModule, 
               HttpModule,
               AgGridModule.withNg2ComponentSupport(),
-              ReactiveFormsModule
+              ReactiveFormsModule,
+              ChartsModule
+
     ],
   declarations: [ AppComponent,
                   SearchComponent,

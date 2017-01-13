@@ -1,4 +1,4 @@
-import { Component,Input,OnInit,Injectable } from '@angular/core';
+import { Component,Input,OnInit,Injectable,ViewChild } from '@angular/core';
 import { Http, Headers} from '@angular/http';
 import {SpotifyService} from '../../services/spotify.service';
 import 'rxjs/add/operator/map';
@@ -10,115 +10,7 @@ declare  var $:any;
     moduleId:module.id,
     selector: 'search',
     templateUrl: 'search.component.html',
-    styles:[`
-    .color1 {
-			color:black;
-		}
-
-.loading
-{
-  position: relative;
-    width: 100%;
-    height: 600px;
-    padding: 10px 0px;
-    text-align: center;
-    text-indent: -9999px;
-    // background-image: url("../../source/fancybox_loading.gif");
-}
-.card {
-  margin-top: 20px;
-  margin-left: 20px;
-  width:286px;
-  height:280px;
-
-}
-
-.youtubecard {
-  margin-top: 20px;
-  width:100%;
-  height:280px;
-
-}
-.youtubetop
-{
-    position: relative;
-    width: 100%;
-    height: 180px;
-    overflow: hidden;
-    text-align: center;
-}
-.youtubetext
-{
-
-    width: 100%;
-    height:auto;
-
-}
-.card-image {
-  float: left;
-  width: 40px;
-  height: 40px;
-}
-.card-image img {
-  height: 80%;
-  width: 80%;
-}
-.right-content {
-  width: 100%;
-  float: left;
-   background-image: black;
-}
-.card-title {
-  width : 100%;
-  font-size : 15px;
-
-}
-
-.card-content{
-  font-size: 13px;
-    width:100%;
-    height:171px;
-    background-image: black;
-
-}
-.col{
-     border: 1px solid white;
-     border-top-left-radius:5%;
-     border-top-right-radius:5%;
-     border-bottom-left-radius:5%;
-     border-bottom-right-radius:5%;
-     background-color : solid white;
-    }
-.col-sm-4{
-     margin-top : 20px;
-     margin-left : 20px;
-     width : 286px
-     height: 300px;
-    // display: inline-block;
-    }
-.readmore{
-   position: relative;
-    width: 100%;
-    padding: 10px 0px;
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    cursor: pointer;
-    background: #ddd;
-    color: black;
-    margin: 10px 0px;
-
-}
-.imagesizes{
- width: 80%; height: auto;
-}
-.content-image{
-  height:auto;
-}
-#card:hover{background-color:#dcdcdc  ;
- }
-
-  `]
+    styleUrls: ['search.style.css']
 })
 @Injectable()
 export class SearchComponent implements OnInit{
@@ -134,12 +26,14 @@ export class SearchComponent implements OnInit{
     lquery :any;
     dbsearch : any;
 
-    
- 
+  //   @ViewChild('user_name') user_name:ElementRef;
+  //      ngAfterViewInit() {
+  //      console.log(this.user_name)
+  //  }
 
     constructor(private http: Http,private _spotifyService:SpotifyService){
     }
-
+    loading: boolean; 
      makecall(){
             var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
@@ -173,6 +67,8 @@ export class SearchComponent implements OnInit{
      }
     searchcall(){
 
+     this.loading = true 
+
      if(this.readmore_count>1 || this.readmore_count ==0)
        {
           if(this.lquery != this.searchquery)
@@ -200,7 +96,7 @@ export class SearchComponent implements OnInit{
                     this.SumArrayData[0][this.SumArrayData[0].length]= this.YoutubeArray[i];
                   }
                   this.SumArrayData[0].sort(function(){return 0.5-Math.random()});
-          
+                  this.loading = false 
                 }); 
 
               this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
@@ -208,7 +104,7 @@ export class SearchComponent implements OnInit{
               this.YoutubeArray = JSON.parse(JSON.stringify(this.youtubeResult ));
         
                 });
-
+       
           }
        }
        else
@@ -250,6 +146,7 @@ export class SearchComponent implements OnInit{
     
    readmore()
    {
+  
      this.readmore_count ++;
 
           //3번최대 걸어두고 한페이지최대 60개로 제한
@@ -260,18 +157,21 @@ export class SearchComponent implements OnInit{
                     for(var i =10; i<15; i++)
                     {
                       this.SumArrayData[0][i] = this.tweetsArray[i];
+               
                     }
                     break;
             case 2: 
                   for(var i = 15; i<20; i++)
                   {
                       this.SumArrayData[0][i] = this.tweetsArray[i];
+             
                   }
                   break;
             case 3:
                   for(var i= 20; i<25; i++)
                   {
                     this.SumArrayData[0][i] = this.tweetsArray[i];
+                  
                   }
                   break;
           }
@@ -288,18 +188,18 @@ export class SearchComponent implements OnInit{
 
    }
 
-  
+     //card 클릭이벤트
      myAction = function(res:any){
- 
+
     var divTest = document.getElementById("test").style.display='block';
     var divTest2 = document.getElementById("test2").style.display='inline';
     
     if(res.kind == "youtube#searchResult")
     {
-      console.log(res.id.videoId);
+      console.log(res.id.videoId)
       // 이전값들 지워줘야된다 try,catch문 고려, 위에 선언을 document.id 까지선언하고 밑에서 세부사항 수정하도록 고려
-      var youtubedisplay = document.getElementById("player").style.display='inline';
-       var user_Profile= document.getElementById("user_profile").setAttribute('src','');
+        var youtubedisplay = document.getElementById("player").style.display='inline';
+        var user_Profile= document.getElementById("user_profile").setAttribute('src','');
         var detailUsers = document.getElementById("moreinfo").setAttribute('href','');
         var user_Names = document.getElementById("user_name").innerHTML = '';
         var postlink = document.getElementById("post_link").setAttribute('href','');
@@ -310,7 +210,14 @@ export class SearchComponent implements OnInit{
         var k =  "http://www.youtube.com/embed/"+res.id.videoId+"?enablejsapi=1&theme=light&showinfo=0";
         var youtubecontents = document.getElementById("player").setAttribute('src',k);
         var detail_content = document.getElementById("fancybox_skin").setAttribute('style','width:430px;');
-        var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.description;
+        if(res.snippet.description == '')
+        {
+          var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.title;
+        }
+        else
+        {
+            var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.description;
+        }
         var postlinks = document.getElementById("postlink").style.display = 'none';
         console.log(res);
     }

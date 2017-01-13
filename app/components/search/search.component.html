@@ -14,12 +14,14 @@
      </div>
     <div id ="test" class="row">
         <p></p>
+         <div *ngIf="loading == true" class="loader"></div>
+          <div *ngIf="loading == false"></div>
         <div id="card" *ngFor="let res of SumArrayData[0]"  class="col-md-3 col-sm-4 col" style="position:relative; cursor:pointer;" (click)="myAction(res)">                   
                 
                 <div id="youtube" *ngIf="res.kind != undifined" >
                        <div class="youtubecard">
                            <div class="card-image" style="float:right">
-                                <img style={width:10px,height:10px;} src="app/source/youtube.png">
+                                <img style="{width:10px,height:10px;}" src="app/source/youtube.png">
                           </div>
                         <div class="youtubetop">
                              <img style="max-width: 100%; height: 150px;" src={{res.snippet.thumbnails.medium.url}}>
@@ -56,7 +58,7 @@
                 </div>
              </div>
     </div>
-     <div id="loading" class="loading" style="display:none">로딩중  </div>
+     <div id="loading" class="loading" style="display:none"> </div>
      <div id="readmore" class="readmore" style="display:none" (click)="readmore()">Readmore</div>
 
   <div id ="test2" class="fancybox-overlay fancybox-overlay-fixed">
@@ -90,4 +92,3 @@
                 </div>
         </div>
 </div>
-                                              

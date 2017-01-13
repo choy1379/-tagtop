@@ -1,11 +1,10 @@
-import { Component,Input,OnInit,Injectable,OnDestroy } from '@angular/core';
+import { Component,Input,OnInit,Injectable,OnDestroy,ViewChild } from '@angular/core';
 import { Http, Headers} from '@angular/http';
 import {Collect}  from '../collect';
 import {GridOptions} from 'ag-grid/main';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {Observable} from 'rxjs/Rx'
 declare  var $:any;
-
 
 @Component({
     moduleId:module.id,
@@ -15,9 +14,24 @@ declare  var $:any;
 
 })
 @Injectable()
-export class CollectComponent implements OnInit,OnDestroy {
+export class CollectComponent implements OnInit {
     public gridOptions:GridOptions;
     public gridOptions2:GridOptions;
+
+
+  public barChartOptions:any = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+  //하단 라벨
+  public barChartLabels:string[] = [''];
+  //바 타입
+  public barChartType:string = 'bar';
+  public barChartLegend:boolean = true;
+
+  public barChartData:any[] = [
+    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'}
+  ];
 
     SumArrayData = new Array(new Array(0));
     
@@ -29,9 +43,6 @@ export class CollectComponent implements OnInit,OnDestroy {
         this.gridOptions.columnDefs = this.createColumnDefs();
         this.gridOptions2 = <GridOptions>{};
         this.gridOptions2.columnDefs = this.createColumnDefs2();
-        
-
-    
 
         //validate check
         this.VailidateForm = fb.group({
@@ -45,7 +56,7 @@ export class CollectComponent implements OnInit,OnDestroy {
         // console.log('form changed to:', form);
       }
     );
-
+ 
         
  }
 
@@ -57,10 +68,28 @@ export class CollectComponent implements OnInit,OnDestroy {
     since_id = "0" 
     max_id = "0"
     httpResultData :any
-  
+ 
+ overimage(event : any ){
+    if(event.fromElement.innerText.slice(0,8) == 'https://')
+    {           
+        var divTop = event.clientY - 20 + 'px'; //상단 좌표
+        var divLeft =event.clientX + 10 + 'px'; //좌측 좌표
+        document.getElementById("imgViewer").setAttribute('src',event.fromElement.innerText);
+        document.getElementById("imgViewer").setAttribute('style','z-index:1; position: absolute; top :'+divTop+';left : '+divLeft+';width: 150px; display:block;')
+        console.log(event)
+    }
+ }
+overimagemove(event : any ){
+        var divTop = event.clientY - 20 + 'px'; //상단 좌표
+        var divLeft =event.clientX + 10 + 'px'; //좌측 좌표
+        document.getElementById("imgViewer").setAttribute('style','z-index :1; position: absolute; top :'+divTop+';left : '+divLeft+';width: 150px; display:block;')
+}
+ overimageout(event : any ){
+         document.getElementById("imgViewer").setAttribute('style','display:none;')
+}
 
 onRowClicked(event: any) { 
-      //결과값 hide 비동기써서 그리드 로드 시키고 api 셋로우 데이터
+
       this.searchdata = event.data;
       
        var query = {
@@ -73,12 +102,63 @@ onRowClicked(event: any) {
         this.http.post('http://localhost:4100/searchid',query,{headers: headers}).subscribe((res) => {
         this.resultData = res.json(); 
 
-        
-         this.gridOptions2.api.setRowData(this.resultData)     
-         var resultsearch_show = document.getElementById("resultsearch").style.display='inline';    
+        //2017-01-10 그래프 부분 
+        var TempResultData = new Array()  //수집된데이타 날짜    배열
+        var overlapData = new Array()      // 날짜 월 일만 짜른 배열
+        var overlapcount = new Array()     // 중복된값 카운트   배열
+
+        for(var i = 0 ; i < this.resultData.length - 1; i ++)
+        {
+            TempResultData[i] = this.resultData[i]['date'].substring(0,10)
+        }
+         TempResultData.sort(this.sortDate)
+        for(var i = 0 ; i < TempResultData.length; i ++)
+        {
+            TempResultData[i] = TempResultData[i].substring(5,10)
+        }
+        //array 중복 제거 
+        var uniq = TempResultData.reduce(function(a,b){
+            if (a.indexOf(b) < 0 ) a.push(b);
+            return a;
+        },[]);
+
+        this.barChartLabels = uniq
+
+        for(var value in TempResultData) {
+
+        var index = TempResultData[value]
+        overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1
+        }   
+       
+        for(var i = 0 ; i< uniq.length; i ++)
+        {
+            var tempname = uniq[i]
+            overlapcount[i] = overlapData[tempname]
+        }
+        this.barChartData = [{data : overlapcount,label:this.resultData[0]['searchquery']}]
+
+        this.gridOptions2.api.setRowData(this.resultData)     
+        var resultsearch_show = document.getElementById("resultsearch").style.display='inline';    
          });
+         
+}
+sortDate(a,b){
+        var arr0 = a.split("-");
+        var arr1 = b.split("-");
+        var date_a = new Date(arr0[0],arr0[1]-1,arr0[2]);
+        var date_b = new Date(arr1[0],arr1[1]-1,arr1[2]);
+        if (date_a < date_b) return -1;
+        if (date_a > date_b) return 1;
+        return 0;
 }
 
+  public chartClicked(e:any):void {
+    // console.log(e);
+  }
+
+  public chartHovered(e:any):void {
+    // console.log(e);
+  }
 ngOnInit(){
     //테스트위해 잠심 11/02
      var headers = new Headers();
@@ -134,21 +214,44 @@ ngOnInit(){
         twitter:twitter
 
       }     
-  // Hashtag search&insert count maximum 500 2016/10/30
-    $.ajax({
-            type: 'POST',
-                data: {
-                          "hashtag" : hashtag,
+
+      
+       var query = {
+                         "hashtag" : hashtag,
                           "email" :  email,
                           "frcal" : frcal,
                           "tocal" : tocal,
                           "twitter" : twitter,
                          "name"    : name
+       }
+       
+        var headers = new Headers(); 
+        headers.append('Content-Type', 'application/json')
+        this.http.post('http://localhost:4100/dbUserinsert',query,{headers: headers}).subscribe((res) => {
+               this.gridOptions.api.refreshView();
+           this.collect = [];
+            var headers = new Headers(); 
+            headers.append('Content-Type', 'application/json');
+            this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
+            this.collect = res.json();
+            this.gridOptions.api.setRowData(res.json()) 
+            var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
+                });
+        })
+    // $.ajax({
+    //         type: 'POST',
+    //             data: {
+    //                       "hashtag" : hashtag,
+    //                       "email" :  email,
+    //                       "frcal" : frcal,
+    //                       "tocal" : tocal,
+    //                       "twitter" : twitter,
+    //                      "name"    : name
                         
-                    },
-            contentType: 'application/X-www-form-urlencoded',
-            url: 'http://localhost:4100/dbUserinsert'
-        });
+    //                 },
+    //         contentType: 'application/X-www-form-urlencoded',
+    //         url: 'http://localhost:4100/dbUserinsert'
+    //     });
     
 
 //    http.post 변경전까지 구성요소바꿈 
@@ -156,6 +259,7 @@ ngOnInit(){
 //    console.log("서치 완료")
    this.changeState('appState','default')
    this.VailidateForm.reset()
+
     }
 
 
@@ -405,6 +509,6 @@ ngOnInit(){
         ];
     }
     
-   
+
 
  }

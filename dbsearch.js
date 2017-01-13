@@ -4,8 +4,8 @@ var express = require('express');
 var router = express.Router();
 var searchfunctions = require('./functions')
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
-
+// var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+var db = mongojs('mongodb://localhost:27017/hashcollect');
 
 functions = {
 
@@ -31,6 +31,7 @@ functions = {
         if (err) {
           return res.send(err);
         }
+    
         res.json(collect);
     
       });
@@ -67,7 +68,14 @@ functions = {
         
     },  
     scheduleHash: () => {
-    db.collect.find({}, (err, collect) => {
+    var today = new Date();
+    var dd = ('0'+ today.getDate()).slice(-2);
+    //2017-01-06 날짜 관련 
+    var mm = ('0'+ today.getMonth()+1).slice(-2);
+    var yyyy = today.getFullYear();
+    today = yyyy+'-'+mm+'-'+dd;
+
+    db.collect.find({tocal:{$gte:today}}, (err, collect) => {
             if (err) {
 
               return res.send(err);
@@ -79,12 +87,37 @@ functions = {
                   config.schedule.hashtag[i] = collect[i].hashtag
                   config.schedule.name[i] = collect[i].name
               }
-            console.log('진입완료')
+            console.log(config.schedule)
             
    
     });
   },
+   deleteAll : () => {
+   var today = new Date();
+    var dd = ('0'+ today.getDate()).slice(-2);
+     //2017-01-06 날짜 관련 
+    var mm = ('0'+ today.getMonth()+1).slice(-2);
+    var yyyy = today.getFullYear();
+    today = yyyy+'-'+mm+'-'+dd;
+    // db.collect.find({tocal:{$lt:today}}, (err, collect) => {
+    //         if (err) {
 
+    //           return res.send(err);
+    //         }
+    //           for(var i =0; i<collect.length; i++)
+    //           {
+    //              db.dummy.remove({searchquery:collect[i].hashtag,id:collect[i].name}, (err) => {      
+    //              });
+    //           }  
+    //       });
+    console.log(today)
+        db.dummy.remove({}, (err) => {      
+                });
+       db.collect.remove({tocal:{$lt:today}}, (err, collect) => {      
+        });
+  
+      console.log('삭제완료')
+    },  
 }
 
 

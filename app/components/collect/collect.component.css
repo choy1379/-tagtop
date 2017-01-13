@@ -40,3 +40,12 @@
 		margin-bottom: 0;
 	}
 }
+.preview{
+	z-index: 9999;
+	position:absolute;
+	border:0px solid #ccc;
+	background:#333;
+	padding:1px;
+	display:none;
+	color:#fff;
+}

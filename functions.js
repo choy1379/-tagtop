@@ -3,7 +3,8 @@ var config = require('./config');
 var express = require('express');
 var router = express.Router();
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+// var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+var db = mongojs('mongodb://localhost:27017/hashcollect');
 var synrequest = require('sync-request');
 
 
@@ -42,7 +43,7 @@ functions = {
                 
              }
          })
-      
+
         
     },
      collectSearch: function(req, res) {
@@ -353,62 +354,7 @@ functions = {
                         
                         //유저아이디값
                           spooky.waitForSelector('body > div:nth-child(9)',[{searchquery: searchquery,id:id},function(){
-                                userid = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
-                                });
-                                date = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > a > time').getAttribute('datetime');                                   
-                                });
-                                image = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img').getAttribute('src');                                   
-                                });
-                                like = this.evaluate(function() {
-                                        // return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > span > span').innerText;                                   
-                                        var elements =__utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > a');
-                                        return elements.map(function(e) {
-                                                return  e.getAttribute('title');                                            
-                                            });    
-                                });
-                                text = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > ul > li:nth-child(1) > h1 > span').innerText;                                   
-                                });
-
-                               
-                               
-                                instagram = new Object() 
-                                instagram.userid = userid;
-                                instagram.date = date
-                                instagram.image = image
-                                instagram.like = like.length
-                                instagram.sns = 'instagram'
-                                instagram.text = text
-                                instagram.searchquery = searchquery
-                                instagram.id = id 
-                                this.emit('dbinsert',instagram)
-                                this.wait(1000);    
-                                // this.capture('insta'+new Date()+'.jpg');
-                                
-                                
-                        }]);
-
-                        //넥스트 버튼 대기
-                            spooky.waitForSelector('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img',function(){
-                        });
-                        
-                        //for문 개수만큼 수정
-                        for(var i =0; i<10; i++)
-                        {
-                        //넥스트 버튼 클릭 
-                        spooky.then([{x: selectXPath},function() {
-                        var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
-                        eval(x);
-                        this.click(xPath(xpathExpr1));                     
-                        this.wait(1000);                                  
-                        }]);
-
-                        //넥스트 후 
-                        spooky.then([{searchquery: searchquery,id:id},function() {      
-                           userid = this.evaluate(function() {
+                                  userid = this.evaluate(function() {
                                         return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
                                 });
                                 date = this.evaluate(function() {
@@ -444,7 +390,76 @@ functions = {
                                 });
 
                                
-                              
+                               
+                                instagram.userid = userid
+                                instagram.date = date
+                                instagram.image = image
+                                instagram.sns = 'instagram'
+                                instagram.text = text
+                                instagram.searchquery = searchquery
+                                instagram.id = id 
+                                this.emit('dbinsert',instagram)  
+                                // this.capture('insta'+new Date()+'.jpg');
+                                
+                                
+                        }]);
+
+                        //넥스트 버튼 대기
+                            spooky.waitForSelector('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img',function(){
+                        });
+                        
+                        //for문 개수만큼 수정
+                        for(var i =0; i<100; i++)
+                        {
+                        //넥스트 버튼 클릭 
+                        spooky.then([{x: selectXPath},function() {
+                        var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
+                        eval(x);
+                        this.click(xPath(xpathExpr1));                     
+                        this.wait(1000);                                  
+                        }]);
+
+                        //넥스트 후 
+                        spooky.then([{searchquery: searchquery,id:id},function() {     
+                             
+                           userid = this.evaluate(function() {
+                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
+                                });
+                                date = this.evaluate(function() {
+                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > a > time').getAttribute('datetime');                                   
+                                });
+                                image = this.evaluate(function() {
+                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img').getAttribute('src');                                   
+                                });
+                                like = this.evaluate(function() {
+  
+                                        var elements =__utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > a');
+                                        return elements.map(function(e) {
+                                                return  e.getAttribute('title');                                            
+                                            });
+                                });
+                         
+                                instagram = new Object() 
+
+                                if(like.length == 0)
+                                {
+                                     like = this.evaluate(function() {
+                                              return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > span > span').innerText;
+                                     })
+                                     instagram.like = like
+                                     
+                                }
+                                else
+                                {
+                                     instagram.like = like.length
+                                     
+                                }
+
+                                text = this.evaluate(function() {
+                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > ul > li:nth-child(1) > h1 > span').innerText;                                   
+                                });
+
+
                                 instagram.userid = userid
                                 instagram.date = date
                                 instagram.image = image
@@ -453,7 +468,7 @@ functions = {
                                 instagram.searchquery = searchquery
                                 instagram.id = id 
                                 this.emit('dbinsert',instagram)
-
+                          
                         }]);    
                         }     
 
@@ -472,7 +487,7 @@ functions = {
 
              spooky.on('dbinsert', function (instagram) {
                   var dt = new Date(Date.parse(instagram.date.replace(/( \+)/, ' UTC$1')))                              
-                  var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                  var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0'+ dt.getDate()).slice(-2) + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
                   instagram.date = ConvertDt
                   console.log(instagram)
 
@@ -588,7 +603,7 @@ functions = {
                                         
                                                 });
                   
-            
+                                            
                             for(var i = 0; i<Userid.length; i++)
                             {
                                 data = new Object() 
@@ -608,10 +623,10 @@ functions = {
                   }
 
                     // i값 추후 수정해줘야됨 개수에 따라  2016/11/24
-                    for (var i = 0 ; i<3; i++)
+                    for (var i = 0 ; i<5; i++)
                     {
                             //마지막 insert
-                        if( i == 2)
+                        if( i == 4)
                         {
                             twitterins()
                         }
@@ -630,12 +645,11 @@ functions = {
                                         });
 
              spooky.on('dbinsert', function (data) {
-                    var dt = new Date(Number(data.date))
-                    var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+                    var dt = new Date(Number(data.date))                                                       
+                    var ConvertDt = '' + dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0'+ dt.getDate()).slice(-2) + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
                     data.date = ConvertDt
-             
-                    //디비 입력
-                      db.dummy.save(data, function(){
+
+                    db.dummy.save(data, function(){
                         });
                 });
 

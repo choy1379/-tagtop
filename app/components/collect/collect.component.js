@@ -14,6 +14,18 @@ var forms_1 = require('@angular/forms');
 var CollectComponent = (function () {
     function CollectComponent(http, fb) {
         this.http = http;
+        this.barChartOptions = {
+            scaleShowVerticalLines: false,
+            responsive: true
+        };
+        //하단 라벨
+        this.barChartLabels = [''];
+        //바 타입
+        this.barChartType = 'bar';
+        this.barChartLegend = true;
+        this.barChartData = [
+            { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' }
+        ];
         this.SumArrayData = new Array(new Array(0));
         this.ngcount = 0;
         this.since_id = "0";
@@ -35,9 +47,25 @@ var CollectComponent = (function () {
             // console.log('form changed to:', form);
         });
     }
+    CollectComponent.prototype.overimage = function (event) {
+        if (event.fromElement.innerText.slice(0, 8) == 'https://') {
+            var divTop = event.clientY - 20 + 'px'; //상단 좌표
+            var divLeft = event.clientX + 10 + 'px'; //좌측 좌표
+            document.getElementById("imgViewer").setAttribute('src', event.fromElement.innerText);
+            document.getElementById("imgViewer").setAttribute('style', 'z-index:1; position: absolute; top :' + divTop + ';left : ' + divLeft + ';width: 150px; display:block;');
+            console.log(event);
+        }
+    };
+    CollectComponent.prototype.overimagemove = function (event) {
+        var divTop = event.clientY - 20 + 'px'; //상단 좌표
+        var divLeft = event.clientX + 10 + 'px'; //좌측 좌표
+        document.getElementById("imgViewer").setAttribute('style', 'z-index :1; position: absolute; top :' + divTop + ';left : ' + divLeft + ';width: 150px; display:block;');
+    };
+    CollectComponent.prototype.overimageout = function (event) {
+        document.getElementById("imgViewer").setAttribute('style', 'display:none;');
+    };
     CollectComponent.prototype.onRowClicked = function (event) {
         var _this = this;
-        //결과값 hide 비동기써서 그리드 로드 시키고 api 셋로우 데이터
         this.searchdata = event.data;
         var query = {
             "name": this.searchdata.name,
@@ -47,9 +75,53 @@ var CollectComponent = (function () {
         headers.append('Content-Type', 'application/json');
         this.http.post('http://localhost:4100/searchid', query, { headers: headers }).subscribe(function (res) {
             _this.resultData = res.json();
+            //2017-01-10 그래프 부분 
+            var TempResultData = new Array(); //수집된데이타 날짜    배열
+            var overlapData = new Array(); // 날짜 월 일만 짜른 배열
+            var overlapcount = new Array(); // 중복된값 카운트   배열
+            for (var i = 0; i < _this.resultData.length - 1; i++) {
+                TempResultData[i] = _this.resultData[i]['date'].substring(0, 10);
+            }
+            TempResultData.sort(_this.sortDate);
+            for (var i = 0; i < TempResultData.length; i++) {
+                TempResultData[i] = TempResultData[i].substring(5, 10);
+            }
+            //array 중복 제거 
+            var uniq = TempResultData.reduce(function (a, b) {
+                if (a.indexOf(b) < 0)
+                    a.push(b);
+                return a;
+            }, []);
+            _this.barChartLabels = uniq;
+            for (var value in TempResultData) {
+                var index = TempResultData[value];
+                overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1;
+            }
+            for (var i = 0; i < uniq.length; i++) {
+                var tempname = uniq[i];
+                overlapcount[i] = overlapData[tempname];
+            }
+            _this.barChartData = [{ data: overlapcount, label: _this.resultData[0]['searchquery'] }];
             _this.gridOptions2.api.setRowData(_this.resultData);
             var resultsearch_show = document.getElementById("resultsearch").style.display = 'inline';
         });
+    };
+    CollectComponent.prototype.sortDate = function (a, b) {
+        var arr0 = a.split("-");
+        var arr1 = b.split("-");
+        var date_a = new Date(arr0[0], arr0[1] - 1, arr0[2]);
+        var date_b = new Date(arr1[0], arr1[1] - 1, arr1[2]);
+        if (date_a < date_b)
+            return -1;
+        if (date_a > date_b)
+            return 1;
+        return 0;
+    };
+    CollectComponent.prototype.chartClicked = function (e) {
+        // console.log(e);
+    };
+    CollectComponent.prototype.chartHovered = function (e) {
+        // console.log(e);
     };
     CollectComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -82,6 +154,7 @@ var CollectComponent = (function () {
         this.gridOptions2.api.exportDataAsCsv('asd');
     };
     CollectComponent.prototype.addinfo = function (email, name, hashtag, frcal, tocal, twitter) {
+        var _this = this;
         var addinfo = {
             email: email,
             name: name,
@@ -90,20 +163,40 @@ var CollectComponent = (function () {
             tocal: tocal,
             twitter: twitter
         };
-        // Hashtag search&insert count maximum 500 2016/10/30
-        $.ajax({
-            type: 'POST',
-            data: {
-                "hashtag": hashtag,
-                "email": email,
-                "frcal": frcal,
-                "tocal": tocal,
-                "twitter": twitter,
-                "name": name
-            },
-            contentType: 'application/X-www-form-urlencoded',
-            url: 'http://localhost:4100/dbUserinsert'
+        var query = {
+            "hashtag": hashtag,
+            "email": email,
+            "frcal": frcal,
+            "tocal": tocal,
+            "twitter": twitter,
+            "name": name
+        };
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        this.http.post('http://localhost:4100/dbUserinsert', query, { headers: headers }).subscribe(function (res) {
+            _this.gridOptions.api.refreshView();
+            _this.collect = [];
+            var headers = new http_1.Headers();
+            headers.append('Content-Type', 'application/json');
+            _this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
+                _this.collect = res.json();
+                _this.gridOptions.api.setRowData(res.json());
+                var resultsearch_hide = document.getElementById("resultsearch").style.display = 'none';
+            });
         });
+        // $.ajax({
+        //         type: 'POST',
+        //             data: {
+        //                       "hashtag" : hashtag,
+        //                       "email" :  email,
+        //                       "frcal" : frcal,
+        //                       "tocal" : tocal,
+        //                       "twitter" : twitter,
+        //                      "name"    : name
+        //                 },
+        //         contentType: 'application/X-www-form-urlencoded',
+        //         url: 'http://localhost:4100/dbUserinsert'
+        //     });
         //    http.post 변경전까지 구성요소바꿈 
         //   this.searchajax(hashtag,addinfo);
         //    console.log("서치 완료")

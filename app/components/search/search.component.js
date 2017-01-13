@@ -13,6 +13,10 @@ var http_1 = require('@angular/http');
 var spotify_service_1 = require('../../services/spotify.service');
 require('rxjs/add/operator/map');
 var SearchComponent = (function () {
+    //   @ViewChild('user_name') user_name:ElementRef;
+    //      ngAfterViewInit() {
+    //      console.log(this.user_name)
+    //  }
     function SearchComponent(http, _spotifyService) {
         this.http = http;
         this._spotifyService = _spotifyService;
@@ -20,6 +24,7 @@ var SearchComponent = (function () {
         this.readmore_count = 0;
         this.data = new Array();
         this.SumArrayData = new Array(new Array(0), new Array(0));
+        //card 클릭이벤트
         this.myAction = function (res) {
             var divTest = document.getElementById("test").style.display = 'block';
             var divTest2 = document.getElementById("test2").style.display = 'inline';
@@ -38,7 +43,12 @@ var SearchComponent = (function () {
                 var k = "http://www.youtube.com/embed/" + res.id.videoId + "?enablejsapi=1&theme=light&showinfo=0";
                 var youtubecontents = document.getElementById("player").setAttribute('src', k);
                 var detail_content = document.getElementById("fancybox_skin").setAttribute('style', 'width:430px;');
-                var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.description;
+                if (res.snippet.description == '') {
+                    var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.title;
+                }
+                else {
+                    var youtube_contents_text = document.getElementById("content").innerHTML = res.snippet.description;
+                }
                 var postlinks = document.getElementById("postlink").style.display = 'none';
                 console.log(res);
             }
@@ -144,6 +154,7 @@ var SearchComponent = (function () {
     };
     SearchComponent.prototype.searchcall = function () {
         var _this = this;
+        this.loading = true;
         if (this.readmore_count > 1 || this.readmore_count == 0) {
             if (this.lquery != this.searchquery) {
                 var headers = new http_1.Headers();
@@ -165,6 +176,7 @@ var SearchComponent = (function () {
                         _this.SumArrayData[0][_this.SumArrayData[0].length] = _this.YoutubeArray[i];
                     }
                     _this.SumArrayData[0].sort(function () { return 0.5 - Math.random(); });
+                    _this.loading = false;
                 });
                 this._spotifyService.searchYoutube(this.searchquery).subscribe(function (res) {
                     _this.youtubeResult = res.items;
@@ -230,7 +242,7 @@ var SearchComponent = (function () {
             moduleId: module.id,
             selector: 'search',
             templateUrl: 'search.component.html',
-            styles: ["\n    .color1 {\n\t\t\tcolor:black;\n\t\t}\n\n.loading\n{\n  position: relative;\n    width: 100%;\n    height: 600px;\n    padding: 10px 0px;\n    text-align: center;\n    text-indent: -9999px;\n    // background-image: url(\"../../source/fancybox_loading.gif\");\n}\n.card {\n  margin-top: 20px;\n  margin-left: 20px;\n  width:286px;\n  height:280px;\n\n}\n\n.youtubecard {\n  margin-top: 20px;\n  width:100%;\n  height:280px;\n\n}\n.youtubetop\n{\n    position: relative;\n    width: 100%;\n    height: 180px;\n    overflow: hidden;\n    text-align: center;\n}\n.youtubetext\n{\n\n    width: 100%;\n    height:auto;\n\n}\n.card-image {\n  float: left;\n  width: 40px;\n  height: 40px;\n}\n.card-image img {\n  height: 80%;\n  width: 80%;\n}\n.right-content {\n  width: 100%;\n  float: left;\n   background-image: black;\n}\n.card-title {\n  width : 100%;\n  font-size : 15px;\n\n}\n\n.card-content{\n  font-size: 13px;\n    width:100%;\n    height:171px;\n    background-image: black;\n\n}\n.col{\n     border: 1px solid white;\n     border-top-left-radius:5%;\n     border-top-right-radius:5%;\n     border-bottom-left-radius:5%;\n     border-bottom-right-radius:5%;\n     background-color : solid white;\n    }\n.col-sm-4{\n     margin-top : 20px;\n     margin-left : 20px;\n     width : 286px\n     height: 300px;\n    // display: inline-block;\n    }\n.readmore{\n   position: relative;\n    width: 100%;\n    padding: 10px 0px;\n    text-align: center;\n    font-size: 1.5em;\n    font-weight: bold;\n    cursor: pointer;\n    background: #ddd;\n    color: black;\n    margin: 10px 0px;\n\n}\n.imagesizes{\n width: 80%; height: auto;\n}\n.content-image{\n  height:auto;\n}\n#card:hover{background-color:#dcdcdc  ;\n }\n\n  "]
+            styleUrls: ['search.style.css']
         }),
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http, spotify_service_1.SpotifyService])

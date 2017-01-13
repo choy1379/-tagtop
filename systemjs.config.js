@@ -24,6 +24,8 @@
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
       'ag-grid-ng2' : 'node_modules/ag-grid-ng2',
       'ag-grid' : 'node_modules/ag-grid',
+      //2017-01-09
+      "ng2-charts": "node_modules/ng2-charts",
       // other libraries
       'rxjs':                       'npm:rxjs',
       'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
@@ -46,7 +48,8 @@
       'angular2-in-memory-web-api': {
         main: './index.js',
         defaultExtension: 'js'
-      }
+      },
+      "ng2-charts": { main: 'ng2-charts.js' },
     }
   });
 })(this);

@@ -1,0 +1,165 @@
+.loader,
+.loader:before,
+.loader:after {
+  background: #000000;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: '';
+}
+.loader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader {
+  color: #ffffff;
+  text-indent: -9999em;
+  margin: 88px auto;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:after {
+  left: 1.5em;
+}
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+    .color1 {
+			color:black;
+		}
+
+.loading
+{
+  position: relative;
+    width: 100%;
+    height: 600px;
+    padding: 10px 0px;
+    text-align: center;
+    text-indent: -9999px;
+    // background-image: url("../../source/fancybox_loading.gif");
+}
+.card {
+  margin-top: 20px;
+  margin-left: 20px;
+  width:286px;
+  height:280px;
+
+}
+
+.youtubecard {
+  margin-top: 20px;
+  width:100%;
+  height:280px;
+
+}
+.youtubetop
+{
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    text-align: center;
+}
+.youtubetext
+{
+
+    width: 100%;
+    height:auto;
+
+}
+.card-image {
+  float: left;
+  width: 40px;
+  height: 40px;
+}
+.card-image img {
+  height: 80%;
+  width: 80%;
+}
+.right-content {
+  width: 100%;
+  float: left;
+   background-image: black;
+}
+.card-title {
+  width : 100%;
+  font-size : 15px;
+
+}
+
+.card-content{
+  font-size: 13px;
+    width:100%;
+    height:171px;
+    background-image: black;
+
+}
+.col{
+     border: 1px solid white;
+     border-top-left-radius:5%;
+     border-top-right-radius:5%;
+     border-bottom-left-radius:5%;
+     border-bottom-right-radius:5%;
+     background-color : solid white;
+    }
+.col-sm-4{
+     margin-top : 20px;
+     margin-left : 20px;
+     width : 286px
+     height : 300px
+
+    }
+.readmore{
+   position: relative;
+    width: 100%;
+    padding: 10px 0px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    background: #ddd;
+    color: black;
+    margin: 10px 0px;
+
+}
+.imagesizes{
+ width: 80%; height: auto;
+}
+.content-image{
+  height:auto;
+}
+#card:hover{background-color:#dcdcdc  ;
+ }
