@@ -99,7 +99,7 @@ onRowClicked(event: any) {
        
         var headers = new Headers(); 
         headers.append('Content-Type', 'application/json')
-        this.http.post('https://tagtops.herokuapp.com:/searchid',query,{headers: headers}).subscribe((res) => {
+        this.http.post('https://tagtops.herokuapp.com/searchid',query,{headers: headers}).subscribe((res) => {
         this.resultData = res.json(); 
 
         //2017-01-10 그래프 부분 

@@ -73,7 +73,7 @@ var CollectComponent = (function () {
         };
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('https://tagtops.herokuapp.com:/searchid', query, { headers: headers }).subscribe(function (res) {
+        this.http.post('https://tagtops.herokuapp.com/searchid', query, { headers: headers }).subscribe(function (res) {
             _this.resultData = res.json();
             //2017-01-10 그래프 부분 
             var TempResultData = new Array(); //수집된데이타 날짜    배열

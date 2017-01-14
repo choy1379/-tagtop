@@ -3,8 +3,8 @@ var config = require('./config');
 var express = require('express');
 var router = express.Router();
 var mongojs = require('mongojs');
-// var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
-var db = mongojs('mongodb://localhost:27017/hashcollect');
+var db = mongojs('mongodb://admin:admin@ds063406.mlab.com:63406/hashcollect');
+// var db = mongojs('mongodb://localhost:27017/hashcollect');
 
 
 
