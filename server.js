@@ -18,22 +18,22 @@ var async = require('async');
         scheduler.add(8000, function(done,res){
 
                 //2017-01-08  임시 주석
-                // dbsearch.deleteAll()
-                // dbsearch.scheduleHash()  
+                dbsearch.deleteAll()
+                dbsearch.scheduleHash()  
                 
-                // setTimeout(function() {
-                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
-                //     {
-                //         functions.scheduleinstagram(i)
-                //     }
-                // }, 3000);
+                setTimeout(function() {
+                    for(var i = 0; i < config.schedule.hashtag.length; i++)
+                    {
+                        functions.scheduleinstagram(i)
+                    }
+                }, 3000);
 
-                // setTimeout(function() {
-                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
-                //     {
-                //         functions.scheduletwitter(i)
-                //     }
-                // }, 3000);
+                setTimeout(function() {
+                    for(var i = 0; i < config.schedule.hashtag.length; i++)
+                    {
+                        functions.scheduletwitter(i)
+                    }
+                }, 3000);
                 
             //  done();     
         });
