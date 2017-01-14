@@ -11,7 +11,7 @@ var Scheduler = require('nschedule');
 var config = require('./config');
 var async = require('async');
 
-var cheerio = require('cheerio');
+// var cheerio = require('cheerio');
 
 
 
