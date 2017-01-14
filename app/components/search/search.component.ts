@@ -38,7 +38,7 @@ export class SearchComponent implements OnInit{
             var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('https://tagtops.herokuapp.com:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
     }
@@ -46,7 +46,7 @@ export class SearchComponent implements OnInit{
               var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('https://tagtops.herokuapp.com:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
         
@@ -57,7 +57,7 @@ export class SearchComponent implements OnInit{
     var searchterm = 'query=' + this.searchquery;
     headers.append('Content-Type', 'application/X-www-form-urlencoded');
 
-    this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+    this.http.post('https://tagtops.herokuapp.com:4100/search', searchterm, {headers: headers}).subscribe((res) => {
         this.data[0] = res.json().data.statuses;
         }); 
     this._spotifyService.searchYoutube(this.searchquery).subscribe(res => {
@@ -81,7 +81,7 @@ export class SearchComponent implements OnInit{
                 // var searchterm = 'query=' + this.searchquery + 'maxid='+ maxids;
                 //
                 headers.append('Content-Type', 'application/X-www-form-urlencoded');
-                this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+                this.http.post('https://tagtops.herokuapp.com:4100/search', searchterm, {headers: headers}).subscribe((res) => {
                 this.tweetsdata = res.json().data.statuses;  
                 this.tweetsArray = JSON.parse(JSON.stringify(this.tweetsdata ));
                 this.lquery = this.searchquery;
@@ -116,7 +116,7 @@ export class SearchComponent implements OnInit{
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
           
  
-                this.http.post('http://localhost:4100/search', searchterm, {headers: headers}).subscribe((res) => {
+                this.http.post('https://tagtops.herokuapp.com:4100/search', searchterm, {headers: headers}).subscribe((res) => {
                 this.tweetsdata = res.json().data.statuses;  
                 this.tweetsArray = JSON.parse(JSON.stringify(this.tweetsdata ));
                 this.lquery = this.searchquery;

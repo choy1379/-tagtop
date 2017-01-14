@@ -128,14 +128,14 @@ var CollectComponent = (function () {
         //테스트위해 잠심 11/02
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('http://localhost:4100/authorize', { headers: headers }).subscribe(function (res) {
+        this.http.post('https://tagtops.herokuapp.com:4100/authorize', { headers: headers }).subscribe(function (res) {
             console.log(res);
         });
         console.log("권한 활성화");
         this.collect = [];
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
+        this.http.post('https://tagtops.herokuapp.com:4100/dbsearch', { headers: headers }).subscribe(function (res) {
             _this.collect = res.json();
             _this.gridOptions.api.setRowData(res.json());
             var resultsearch_hide = document.getElementById("resultsearch").style.display = 'none';
@@ -173,12 +173,12 @@ var CollectComponent = (function () {
         };
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('http://localhost:4100/dbUserinsert', query, { headers: headers }).subscribe(function (res) {
+        this.http.post('https://tagtops.herokuapp.com:4100/dbUserinsert', query, { headers: headers }).subscribe(function (res) {
             _this.gridOptions.api.refreshView();
             _this.collect = [];
             var headers = new http_1.Headers();
             headers.append('Content-Type', 'application/json');
-            _this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
+            _this.http.post('https://tagtops.herokuapp.com:4100/dbsearch', { headers: headers }).subscribe(function (res) {
                 _this.collect = res.json();
                 _this.gridOptions.api.setRowData(res.json());
                 var resultsearch_hide = document.getElementById("resultsearch").style.display = 'none';

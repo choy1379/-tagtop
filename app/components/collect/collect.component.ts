@@ -164,7 +164,7 @@ ngOnInit(){
      var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('https://tagtops.herokuapp.com:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
         
@@ -173,7 +173,7 @@ ngOnInit(){
      this.collect = [];
       var headers = new Headers(); 
       headers.append('Content-Type', 'application/json');
-      this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
+      this.http.post('https://tagtops.herokuapp.com:4100/dbsearch', {headers: headers}).subscribe((res) => {
       this.collect = res.json();
       this.gridOptions.api.setRowData(res.json()) 
       var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
@@ -227,12 +227,12 @@ ngOnInit(){
        
         var headers = new Headers(); 
         headers.append('Content-Type', 'application/json')
-        this.http.post('http://localhost:4100/dbUserinsert',query,{headers: headers}).subscribe((res) => {
+        this.http.post('https://tagtops.herokuapp.com:4100/dbUserinsert',query,{headers: headers}).subscribe((res) => {
                this.gridOptions.api.refreshView();
            this.collect = [];
             var headers = new Headers(); 
             headers.append('Content-Type', 'application/json');
-            this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
+            this.http.post('https://tagtops.herokuapp.com:4100/dbsearch', {headers: headers}).subscribe((res) => {
             this.collect = res.json();
             this.gridOptions.api.setRowData(res.json()) 
             var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
