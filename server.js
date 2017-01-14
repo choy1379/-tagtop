@@ -78,7 +78,7 @@ else
         app.post('/dbUserinsert',dbsearch.Userinsert);  //hashtag result insert
         app.post('/dbsearch',dbsearch.getAllCollect);
         app.post('/searchid',dbsearch.searchid);
-        app.use(express.static(__dirname + "/app"));
+        app.use(express.static(__dirname));
         // app.use(express.static(__dirname));
         app.listen(process.env.PORT || 4100);
         console.log("Server up on port 4100");
