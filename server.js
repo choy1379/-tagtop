@@ -80,7 +80,7 @@ else
         app.post('/searchid',dbsearch.searchid);
         app.use(express.static(__dirname + "/app"));
         // app.use(express.static(__dirname));
-        app.listen(process.env.PORT || 4100);
+        app.listen(process.env.PORT || 5000);
         console.log("Server up on port 4100");
         console.log('Worker %d running!', cluster.worker.id);
 
