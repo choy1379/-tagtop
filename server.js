@@ -32,22 +32,22 @@ if (cluster.isMaster) {
             scheduler.add(8000, function(done,res){
 
                 //2017-01-08  임시 주석
-                dbsearch.deleteAll()
-                dbsearch.scheduleHash()  
+                // dbsearch.deleteAll()
+                // dbsearch.scheduleHash()  
                 
-                setTimeout(function() {
-                    for(var i = 0; i < config.schedule.hashtag.length; i++)
-                    {
-                        functions.scheduleinstagram(i)
-                    }
-                }, 3000);
+                // setTimeout(function() {
+                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
+                //     {
+                //         functions.scheduleinstagram(i)
+                //     }
+                // }, 3000);
 
-                setTimeout(function() {
-                    for(var i = 0; i < config.schedule.hashtag.length; i++)
-                    {
-                        functions.scheduletwitter(i)
-                    }
-                }, 3000);
+                // setTimeout(function() {
+                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
+                //     {
+                //         functions.scheduletwitter(i)
+                //     }
+                // }, 3000);
                 
             //  done();     
         });
@@ -78,7 +78,8 @@ else
         app.post('/dbUserinsert',dbsearch.Userinsert);  //hashtag result insert
         app.post('/dbsearch',dbsearch.getAllCollect);
         app.post('/searchid',dbsearch.searchid);
-        app.use(express.static(__dirname));
+        app.use(express.static(__dirname + "/app"));
+        // app.use(express.static(__dirname));
         app.listen(process.env.PORT || 4100);
         console.log("Server up on port 4100");
         console.log('Worker %d running!', cluster.worker.id);
