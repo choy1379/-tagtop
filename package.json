@@ -52,7 +52,8 @@
     "tiny-jsonrpc": "^2.0.1",
     "zone.js": "^0.6.23",
     "nschedule" : "0.3.0",
-    "ag-grid-ng2" :"7.1.2"
+    "ag-grid-ng2" :"7.1.2",
+    "ag-grid" : "7.1.0"
   },
   "devDependencies": {
     "canonical-path": "0.0.2",
