@@ -22,7 +22,7 @@ import {routing} from './app.routing';
               routing, 
               FormsModule, 
               HttpModule,
-              AgGridModule.withNg2ComponentSupport(),
+              AgGridModule.withAotSupport(),
               ReactiveFormsModule,
               ChartsModule
 
