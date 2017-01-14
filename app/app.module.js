@@ -29,7 +29,7 @@ var AppModule = (function () {
                 app_routing_1.routing,
                 forms_1.FormsModule,
                 http_1.HttpModule,
-                main_1.AgGridModule.withNg2ComponentSupport(),
+                main_1.AgGridModule,
                 forms_1.ReactiveFormsModule,
                 ng2_charts_1.ChartsModule
             ],
