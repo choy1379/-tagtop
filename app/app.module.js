@@ -18,7 +18,6 @@ var search_component_1 = require('./components/search/search.component');
 var navbar_component_1 = require('./components/navbar/navbar.component');
 var about_component_1 = require('./components/about/about.component');
 var collect_component_1 = require('./components/collect/collect.component');
-var main_1 = require('ag-grid-ng2/main');
 var app_routing_1 = require('./app.routing');
 var AppModule = (function () {
     function AppModule() {
@@ -29,7 +28,7 @@ var AppModule = (function () {
                 app_routing_1.routing,
                 forms_1.FormsModule,
                 http_1.HttpModule,
-                main_1.AgGridModule.withNg2ComponentSupport(),
+                // AgGridModule.withNg2ComponentSupport(),
                 forms_1.ReactiveFormsModule,
                 ng2_charts_1.ChartsModule
             ],
