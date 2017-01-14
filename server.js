@@ -6,30 +6,16 @@ var cors = require('cors');
 var functions = require('./functions');
 var dbsearch = require('./dbsearch');
 var app = express();
-var cluster = require('cluster');
 var Scheduler = require('nschedule');
 var config = require('./config');
 var async = require('async');
 
-// var cheerio = require('cheerio');
 
-
-
-if (cluster.isMaster) {
-
-
-  
-    var cpuCount = require('os').cpus().length;
-
-   
-    for (var i = 0; i < cpuCount; i += 1) {
-        cluster.fork();
-    }
 
         var scheduler = new Scheduler(1);
 
 
-            scheduler.add(8000, function(done,res){
+        scheduler.add(8000, function(done,res){
 
                 //2017-01-08  임시 주석
                 // dbsearch.deleteAll()
@@ -52,14 +38,6 @@ if (cluster.isMaster) {
             //  done();     
         });
 
-
-      
-
-
-}
-else
-{
-    
         app.use(bodyParser.json({limit: '50mb'}));
         // app.use(bodyParser.urlencoded({extended: true,parameterLimit: 10000,limit: 1024 * 1024 * 10}));
         app.use(bodyParser.urlencoded({
@@ -82,9 +60,7 @@ else
         // app.use(express.static(__dirname));
         app.listen(process.env.PORT || 4100);
         console.log("Server up on port 4100");
-        console.log('Worker %d running!', cluster.worker.id);
 
-}
 
             // 트위터 api 이용
             // 2016-11-12 500개 서치
