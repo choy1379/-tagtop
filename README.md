@@ -1,3 +1,7 @@
+0.4v 
+
+DEMO : http://tagtops.herokuapp.com 
+=======
 0.3v 
 
 ag-grid-ng2 그리드추가 , 그리드 마우스오버 이벤트 추가 
