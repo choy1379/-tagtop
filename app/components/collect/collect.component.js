@@ -53,7 +53,6 @@ var CollectComponent = (function () {
             var divLeft = event.clientX + 10 + 'px'; //좌측 좌표
             document.getElementById("imgViewer").setAttribute('src', event.fromElement.innerText);
             document.getElementById("imgViewer").setAttribute('style', 'z-index:1; position: absolute; top :' + divTop + ';left : ' + divLeft + ';width: 150px; display:block;');
-            console.log(event);
         }
     };
     CollectComponent.prototype.overimagemove = function (event) {
@@ -73,35 +72,42 @@ var CollectComponent = (function () {
         };
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('https://tagtops.herokuapp.com/searchid', query, { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/searchid', query, { headers: headers }).subscribe(function (res) {
             _this.resultData = res.json();
-            //2017-01-10 그래프 부분 
-            var TempResultData = new Array(); //수집된데이타 날짜    배열
-            var overlapData = new Array(); // 날짜 월 일만 짜른 배열
-            var overlapcount = new Array(); // 중복된값 카운트   배열
-            for (var i = 0; i < _this.resultData.length - 1; i++) {
-                TempResultData[i] = _this.resultData[i]['date'].substring(0, 10);
+            try {
+                //2017-01-10 그래프 부분 
+                var TempResultData = new Array(); //수집된데이타 날짜    배열
+                var overlapData = new Array(); // 날짜 월 일만 짜른 배열
+                var overlapcount = new Array(); // 중복된값 카운트   배열
+                for (var i = 0; i < _this.resultData.length - 1; i++) {
+                    TempResultData[i] = _this.resultData[i]['date'].substring(0, 10);
+                }
+                TempResultData.sort(_this.sortDate);
+                for (var i = 0; i < TempResultData.length; i++) {
+                    TempResultData[i] = TempResultData[i].substring(5, 10);
+                }
+                //array 중복 제거 
+                var uniq = TempResultData.reduce(function (a, b) {
+                    if (a.indexOf(b) < 0)
+                        a.push(b);
+                    return a;
+                }, []);
+                _this.barChartLabels = uniq;
+                for (var value in TempResultData) {
+                    var index = TempResultData[value];
+                    overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1;
+                }
+                for (var i = 0; i < uniq.length; i++) {
+                    var tempname = uniq[i];
+                    overlapcount[i] = overlapData[tempname];
+                }
+                _this.barChartData = [{ data: overlapcount, label: _this.resultData[0]['searchquery'] }];
             }
-            TempResultData.sort(_this.sortDate);
-            for (var i = 0; i < TempResultData.length; i++) {
-                TempResultData[i] = TempResultData[i].substring(5, 10);
+            catch (e) {
+                console.log(e);
             }
-            //array 중복 제거 
-            var uniq = TempResultData.reduce(function (a, b) {
-                if (a.indexOf(b) < 0)
-                    a.push(b);
-                return a;
-            }, []);
-            _this.barChartLabels = uniq;
-            for (var value in TempResultData) {
-                var index = TempResultData[value];
-                overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1;
+            finally {
             }
-            for (var i = 0; i < uniq.length; i++) {
-                var tempname = uniq[i];
-                overlapcount[i] = overlapData[tempname];
-            }
-            _this.barChartData = [{ data: overlapcount, label: _this.resultData[0]['searchquery'] }];
             _this.gridOptions2.api.setRowData(_this.resultData);
             var resultsearch_show = document.getElementById("resultsearch").style.display = 'inline';
         });
@@ -128,14 +134,14 @@ var CollectComponent = (function () {
         //테스트위해 잠심 11/02
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('https://tagtops.herokuapp.com/authorize', { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/authorize', { headers: headers }).subscribe(function (res) {
             console.log(res);
         });
         console.log("권한 활성화");
         this.collect = [];
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('https://tagtops.herokuapp.com/dbsearch', { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
             _this.collect = res.json();
             _this.gridOptions.api.setRowData(res.json());
             var resultsearch_hide = document.getElementById("resultsearch").style.display = 'none';
@@ -173,12 +179,12 @@ var CollectComponent = (function () {
         };
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
-        this.http.post('https://tagtops.herokuapp.com/dbUserinsert', query, { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/dbUserinsert', query, { headers: headers }).subscribe(function (res) {
             _this.gridOptions.api.refreshView();
             _this.collect = [];
             var headers = new http_1.Headers();
             headers.append('Content-Type', 'application/json');
-            _this.http.post('https://tagtops.herokuapp.com/dbsearch', { headers: headers }).subscribe(function (res) {
+            _this.http.post('http://localhost:4100/dbsearch', { headers: headers }).subscribe(function (res) {
                 _this.collect = res.json();
                 _this.gridOptions.api.setRowData(res.json());
                 var resultsearch_hide = document.getElementById("resultsearch").style.display = 'none';

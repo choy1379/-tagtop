@@ -129,7 +129,7 @@ var SearchComponent = (function () {
     SearchComponent.prototype.makecall = function () {
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('https://tagtops.herokuapp.com/authorize', { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/authorize', { headers: headers }).subscribe(function (res) {
             console.log(res);
         });
     };
@@ -137,7 +137,7 @@ var SearchComponent = (function () {
         var _this = this;
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('https://tagtops.herokuapp.com/authorize', { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/authorize', { headers: headers }).subscribe(function (res) {
             console.log(res);
         });
         console.log("권한 활성화");
@@ -145,7 +145,7 @@ var SearchComponent = (function () {
         var headers = new http_1.Headers();
         var searchterm = 'query=' + this.searchquery;
         headers.append('Content-Type', 'application/X-www-form-urlencoded');
-        this.http.post('https://tagtops.herokuapp.com/search', searchterm, { headers: headers }).subscribe(function (res) {
+        this.http.post('http://localhost:4100/search', searchterm, { headers: headers }).subscribe(function (res) {
             _this.data[0] = res.json().data.statuses;
         });
         this._spotifyService.searchYoutube(this.searchquery).subscribe(function (res) {
@@ -163,7 +163,7 @@ var SearchComponent = (function () {
                 // var searchterm = 'query=' + this.searchquery + 'maxid='+ maxids;
                 //
                 headers.append('Content-Type', 'application/X-www-form-urlencoded');
-                this.http.post('https://tagtops.herokuapp.com/search', searchterm, { headers: headers }).subscribe(function (res) {
+                this.http.post('http://localhost:4100/search', searchterm, { headers: headers }).subscribe(function (res) {
                     _this.tweetsdata = res.json().data.statuses;
                     _this.tweetsArray = JSON.parse(JSON.stringify(_this.tweetsdata));
                     _this.lquery = _this.searchquery;
@@ -188,7 +188,7 @@ var SearchComponent = (function () {
             var headers = new http_1.Headers();
             var searchterm = 'query=' + this.searchquery;
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
-            this.http.post('https://tagtops.herokuapp.com/search', searchterm, { headers: headers }).subscribe(function (res) {
+            this.http.post('http://localhost:4100tps://tagtops.herokuapp.com/search', searchterm, { headers: headers }).subscribe(function (res) {
                 _this.tweetsdata = res.json().data.statuses;
                 _this.tweetsArray = JSON.parse(JSON.stringify(_this.tweetsdata));
                 _this.lquery = _this.searchquery;

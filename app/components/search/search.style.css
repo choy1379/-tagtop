@@ -69,7 +69,7 @@
     padding: 10px 0px;
     text-align: center;
     text-indent: -9999px;
-    // background-image: url("../../source/fancybox_loading.gif");
+    background-image: url("../../source/fancybox_loading.gif");
 }
 .card {
   margin-top: 20px;

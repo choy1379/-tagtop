@@ -76,7 +76,7 @@ export class CollectComponent implements OnInit {
         var divLeft =event.clientX + 10 + 'px'; //좌측 좌표
         document.getElementById("imgViewer").setAttribute('src',event.fromElement.innerText);
         document.getElementById("imgViewer").setAttribute('style','z-index:1; position: absolute; top :'+divTop+';left : '+divLeft+';width: 150px; display:block;')
-        console.log(event)
+        // console.log(event)
     }
  }
 overimagemove(event : any ){
@@ -99,47 +99,56 @@ onRowClicked(event: any) {
        
         var headers = new Headers(); 
         headers.append('Content-Type', 'application/json')
-        this.http.post('https://tagtops.herokuapp.com/searchid',query,{headers: headers}).subscribe((res) => {
+        this.http.post('http://localhost:4100/searchid',query,{headers: headers}).subscribe((res) => {
         this.resultData = res.json(); 
-
-        //2017-01-10 그래프 부분 
-        var TempResultData = new Array()  //수집된데이타 날짜    배열
-        var overlapData = new Array()      // 날짜 월 일만 짜른 배열
-        var overlapcount = new Array()     // 중복된값 카운트   배열
-
-        for(var i = 0 ; i < this.resultData.length - 1; i ++)
+        try
         {
-            TempResultData[i] = this.resultData[i]['date'].substring(0,10)
+            //2017-01-10 그래프 부분 
+            var TempResultData = new Array()  //수집된데이타 날짜    배열
+            var overlapData = new Array()      // 날짜 월 일만 짜른 배열
+            var overlapcount = new Array()     // 중복된값 카운트   배열
+
+            for(var i = 0 ; i < this.resultData.length - 1; i ++)
+            {
+                TempResultData[i] = this.resultData[i]['date'].substring(0,10)
+            }
+            TempResultData.sort(this.sortDate)
+            for(var i = 0 ; i < TempResultData.length; i ++)
+            {
+                TempResultData[i] = TempResultData[i].substring(5,10)
+            }
+            //array 중복 제거 
+            var uniq = TempResultData.reduce(function(a,b){
+                if (a.indexOf(b) < 0 ) a.push(b);
+                return a;
+            },[]);
+
+            this.barChartLabels = uniq
+
+            for(var value in TempResultData) {
+
+            var index = TempResultData[value]
+            overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1
+            }   
+            
+            for(var i = 0 ; i< uniq.length; i ++)
+            {
+                var tempname = uniq[i]
+                overlapcount[i] = overlapData[tempname]
+            }
+            this.barChartData = [{data : overlapcount,label:this.resultData[0]['searchquery']}]
         }
-         TempResultData.sort(this.sortDate)
-        for(var i = 0 ; i < TempResultData.length; i ++)
+        catch(e)
         {
-            TempResultData[i] = TempResultData[i].substring(5,10)
+            console.log(e)
         }
-        //array 중복 제거 
-        var uniq = TempResultData.reduce(function(a,b){
-            if (a.indexOf(b) < 0 ) a.push(b);
-            return a;
-        },[]);
-
-        this.barChartLabels = uniq
-
-        for(var value in TempResultData) {
-
-        var index = TempResultData[value]
-        overlapData[index] = overlapData[index] == undefined ? 1 : overlapData[index] += 1
-        }   
-       
-        for(var i = 0 ; i< uniq.length; i ++)
+        finally
         {
-            var tempname = uniq[i]
-            overlapcount[i] = overlapData[tempname]
         }
-        this.barChartData = [{data : overlapcount,label:this.resultData[0]['searchquery']}]
-
         this.gridOptions2.api.setRowData(this.resultData)     
         var resultsearch_show = document.getElementById("resultsearch").style.display='inline';    
          });
+        
          
 }
 sortDate(a,b){
@@ -164,7 +173,7 @@ ngOnInit(){
      var headers = new Headers();
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
             
-            this.http.post('https://tagtops.herokuapp.com/authorize', {headers: headers}).subscribe((res) => {
+            this.http.post('http://localhost:4100/authorize', {headers: headers}).subscribe((res) => {
             console.log(res);     
         });
         
@@ -173,7 +182,7 @@ ngOnInit(){
      this.collect = [];
       var headers = new Headers(); 
       headers.append('Content-Type', 'application/json');
-      this.http.post('https://tagtops.herokuapp.com/dbsearch', {headers: headers}).subscribe((res) => {
+      this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
       this.collect = res.json();
       this.gridOptions.api.setRowData(res.json()) 
       var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
@@ -227,12 +236,12 @@ ngOnInit(){
        
         var headers = new Headers(); 
         headers.append('Content-Type', 'application/json')
-        this.http.post('https://tagtops.herokuapp.com/dbUserinsert',query,{headers: headers}).subscribe((res) => {
+        this.http.post('http://localhost:4100/dbUserinsert',query,{headers: headers}).subscribe((res) => {
                this.gridOptions.api.refreshView();
            this.collect = [];
             var headers = new Headers(); 
             headers.append('Content-Type', 'application/json');
-            this.http.post('https://tagtops.herokuapp.com/dbsearch', {headers: headers}).subscribe((res) => {
+            this.http.post('http://localhost:4100/dbsearch', {headers: headers}).subscribe((res) => {
             this.collect = res.json();
             this.gridOptions.api.setRowData(res.json()) 
             var resultsearch_hide = document.getElementById("resultsearch").style.display='none';
