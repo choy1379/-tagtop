@@ -15,18 +15,18 @@ var async = require('async');
         var scheduler = new Scheduler(1);
 
 
-        scheduler.add(8000, function(done,res){
+        // scheduler.add(8000, function(done,res){
 
                 //2017-01-08  임시 주석
                 // dbsearch.deleteAll()
-                // dbsearch.scheduleHash()  
+                dbsearch.scheduleHash()  
                 
-                // setTimeout(function() {
-                //     for(var i = 0; i < config.schedule.hashtag.length; i++)
-                //     {
-                //         functions.scheduleinstagram(i)
-                //     }
-                // }, 3000);
+                setTimeout(function() {
+                    for(var i = 0; i < config.schedule.hashtag.length; i++)
+                    {
+                        functions.scheduleinstagram(i)
+                    }
+                }, 3000);
 
                 // setTimeout(function() {
                 //     for(var i = 0; i < config.schedule.hashtag.length; i++)
@@ -35,8 +35,8 @@ var async = require('async');
                 //     }
                 // }, 3000);
                 
-            //  done();     
-        });
+        //      done();     
+        // });
 
         app.use(bodyParser.json({limit: '50mb'}));
         // app.use(bodyParser.urlencoded({extended: true,parameterLimit: 10000,limit: 1024 * 1024 * 10}));

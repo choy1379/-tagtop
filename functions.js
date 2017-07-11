@@ -332,51 +332,64 @@ functions = {
   
                         });
                         
+                     
                         //더읽기 클릭
-                        spooky.then([{x: selectXPath},function() {
-                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[3]/a';
+                        spooky.then([{x: selectXPath},function() {    
+                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/a';     
                             eval(x);
-                            this.click(xPath(xpathExpr1));                                        
-                            
+                            this.click(xPath(xpathExpr1));       
                         }]);
                         
                         //첫번째그림 대기
-                        spooky.waitForSelector('#react-root > section > main > article > div:nth-child(4) > div._nljxa > div:nth-child(6)',function(){
+                        spooky.waitForSelector('#react-root > section > main > article > div:nth-child(4) > div._nljxa > div:nth-child(1) > div:nth-child(1) > a > div > div._ovg3g',function(){
                         });
                         
                         //첫번째그림 클릭
                           spooky.then([{x: selectXPath},function() {
-                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[1]/div[1]/a[1]';
+                            var xpathExpr1 = '//*[@id="react-root"]/section/main/article/div[2]/div[1]/div[1]/div[1]/a/div/div[2]';
                             eval(x);
-                            this.click(xPath(xpathExpr1));                                        
-                            
+                            this.click(xPath(xpathExpr1));          
                         }]);
                         
                         //유저아이디값
-                          spooky.waitForSelector('body > div:nth-child(9)',[{searchquery: searchquery,id:id},function(){
+                          spooky.waitForSelector('body > div:nth-child(8)',[{searchquery: searchquery,id:id},function(){
                                   userid = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
+                                        return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
                                 });
                                 date = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > a > time').getAttribute('datetime');                                   
+                                        return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > div._3fmp4._ljyfo > a > time').getAttribute('datetime');                                   
                                 });
                                 image = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img').getAttribute('src');                                   
+                                        return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div > div:nth-child(1) > div > div._jjzlb > img').getAttribute('src')                                
                                 });
+                                
+                                 if(image == null)
+                                    {  
+                                        image = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div:nth-child(1) > div > div > div._tqoyh._pwe27 > div > img').getAttribute('src')                                
+                                        });
+                                        
+                                        if(image == null)
+                                        {
+                                              image = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div > div._jjzlb > img').getAttribute('src')                                
+                                            });   
+                                        }
+                                    }
                                 like = this.evaluate(function() {
   
-                                        var elements =__utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > a');
+                                        var elements =__utils__.findAll('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > section._hhrfo._tgw0a > div > a');
                                         return elements.map(function(e) {
                                                 return  e.getAttribute('title');                                            
                                             });
-                                });
 
+                                });
                                 instagram = new Object() 
 
                                 if(like.length == 0)
                                 {
                                      like = this.evaluate(function() {
-                                              return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > span > span').innerText;
+                                              return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > section._hhrfo._tgw0a > div > span > span').innerText;
                                      })
                                      instagram.like = like
                                 }
@@ -386,7 +399,7 @@ functions = {
                                 }
 
                                 text = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > ul > li:nth-child(1) > h1 > span').innerText;                                   
+                                        return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > div._31wak._819mv > ul > li:nth-child(1) > span').innerText;                                   
                                 });
 
                                
@@ -405,71 +418,86 @@ functions = {
                         }]);
 
                         //넥스트 버튼 대기
-                            spooky.waitForSelector('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img',function(){
+                            spooky.waitForSelector('body > div:nth-child(8) > div > div._quk42 > div > div > a._de018.coreSpriteRightPaginationArrow',function(){
                         });
                         
                         //for문 개수만큼 수정
-                        for(var i =0; i<100; i++)
+                        for(var i =0; i<15; i++)
                         {
-                        //넥스트 버튼 클릭 
-                        spooky.then([{x: selectXPath},function() {
-                        var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
-                        eval(x);
-                        this.click(xPath(xpathExpr1));                     
-                        this.wait(1000);                                  
-                        }]);
+                            //넥스트 버튼 클릭 
+                            spooky.then([{x: selectXPath},function() {
+                            var xpathExpr1 = '/html/body/div[2]/div/div[1]/div/div/a[2]';
+                            eval(x);
+                            this.click(xPath(xpathExpr1));                     
+                            this.wait(1000);                                  
+                            }]);
 
-                        //넥스트 후 
-                        spooky.then([{searchquery: searchquery,id:id},function() {     
-                             
-                           userid = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
-                                });
-                                date = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > a > time').getAttribute('datetime');                                   
-                                });
-                                image = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div:nth-child(2) > div > div._jjzlb > img').getAttribute('src');                                   
-                                });
-                                like = this.evaluate(function() {
-  
-                                        var elements =__utils__.findAll('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > a');
-                                        return elements.map(function(e) {
-                                                return  e.getAttribute('title');                                            
-                                            });
-                                });
-                         
-                                instagram = new Object() 
+                            //넥스트 후 
+                            spooky.then([{searchquery: searchquery,id:id},function() {      
+                            userid = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > header > div > a').getAttribute('title');                                   
+                                    });
+                                    date = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > div._3fmp4._ljyfo > a > time').getAttribute('datetime');                                   
+                                    });
+                                    image = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div > div:nth-child(1) > div > div._jjzlb > img').getAttribute('src')                                    
+                                    });
+                                    like = this.evaluate(function() {
+                                            var elements =__utils__.findAll('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > section._hhrfo._tgw0a > div > a');
+                                            return elements.map(function(e) {
+                                                    return  e.getAttribute('title');                                          
+                                                });
+                                    });
+                                                                
+                                    instagram = new Object() 
+                                    if(image == null)
+                                    {  
+                                        image = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div:nth-child(1) > div > div > div._tqoyh._pwe27 > div > img').getAttribute('src')                                
+                                        });
+                                        
+                                        if(image == null)
+                                        {
+                                              image = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._h5v2a > div > div > div._jjzlb > img').getAttribute('src')                                
+                                            });   
+                                        }
+                                    }  
+                                    if(like.length == 0)
+                                    {
+                                        // 10개이상일때 
+                                        like = this.evaluate(function() {
+                                                return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > section._hhrfo._tgw0a > div > span > span').innerText;
+                                        })
+                                        if(like == null)
+                                        {
+                                            instagram.like = 0
+                                        }
+                                        else
+                                        {
+                                        instagram.like = like          
+                                        }                             
+                                    }
+                                    else
+                                    {
+                                        instagram.like = like.length
+                                    }
+                                    text = this.evaluate(function() {
+                                            return __utils__.findOne('body > div:nth-child(8) > div > div._g1ax7 > div > article > div._rgrbt > div._31wak._819mv > ul > li:nth-child(1) > span').innerText;                                   
+                                    });
 
-                                if(like.length == 0)
-                                {
-                                     like = this.evaluate(function() {
-                                              return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > section._tfkbw._d39wz > div > span > span').innerText;
-                                     })
-                                     instagram.like = like
-                                     
-                                }
-                                else
-                                {
-                                     instagram.like = like.length
-                                     
-                                }
 
-                                text = this.evaluate(function() {
-                                        return __utils__.findOne('body > div:nth-child(9) > div > div._g1ax7 > div > article > div._es1du._rgrbt > ul > li:nth-child(1) > h1 > span').innerText;                                   
-                                });
-
-
-                                instagram.userid = userid
-                                instagram.date = date
-                                instagram.image = image
-                                instagram.sns = 'instagram'
-                                instagram.text = text
-                                instagram.searchquery = searchquery
-                                instagram.id = id 
-                                this.emit('dbinsert',instagram)
-                          
-                        }]);    
+                                    instagram.userid = userid
+                                    instagram.date = date
+                                    instagram.image = image
+                                    instagram.sns = 'instagram'
+                                    instagram.text = text
+                                    instagram.searchquery = searchquery
+                                    instagram.id = id 
+                                    this.emit('dbinsert',instagram) 
+                            
+                            }]);    
                         }     
 
                     }

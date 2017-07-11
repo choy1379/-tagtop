@@ -188,7 +188,7 @@ var SearchComponent = (function () {
             var headers = new http_1.Headers();
             var searchterm = 'query=' + this.searchquery;
             headers.append('Content-Type', 'application/X-www-form-urlencoded');
-            this.http.post('http://localhost:4100tps://tagtops.herokuapp.com/search', searchterm, { headers: headers }).subscribe(function (res) {
+            this.http.post('http://localhost:4100/search', searchterm, { headers: headers }).subscribe(function (res) {
                 _this.tweetsdata = res.json().data.statuses;
                 _this.tweetsArray = JSON.parse(JSON.stringify(_this.tweetsdata));
                 _this.lquery = _this.searchquery;

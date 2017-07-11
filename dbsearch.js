@@ -68,12 +68,13 @@ functions = {
         
     },  
     scheduleHash: () => {
+    // 2017-07-10 월 못가져오는 버그 잇음 
     var today = new Date();
     var dd = ('0'+ today.getDate()).slice(-2);
     //2017-01-06 날짜 관련 
     var mm = ('0'+ today.getMonth()+1).slice(-2);
     var yyyy = today.getFullYear();
-    today = yyyy+'-'+mm+'-'+dd;
+    today = yyyy+'-'+'07'+'-'+dd;
 
     db.collect.find({tocal:{$gte:today}}, (err, collect) => {
             if (err) {
